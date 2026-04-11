@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYSARCH — Facilitator Dashboard</title>
+  <meta name="description" content="Facilitator dashboard — manage student appointments and sessions." />
+</head>
+<body>
+  <div class="bg-orb bg-orb-1" style="background:rgba(139,92,246,0.08);"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div id="toast-container"></div>
+
+  <div class="dashboard-layout">
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">👩‍⚕️</div>
+        <span class="logo-text">SYSARCH</span>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="nav-section-label">Main Menu</span>
+        <button class="nav-item active" id="nav-home">
+          <span class="nav-icon">🏠</span> Dashboard
+        </button>
+        <button class="nav-item" id="nav-appointments">
+          <span class="nav-icon">📥</span> View Student Appointments
+          <span class="nav-badge" id="pending-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-item" id="nav-sessions">
+          <span class="nav-icon">📊</span> View Session
+        </button>
+        <button class="nav-item" id="nav-all-sessions">
+          <span class="nav-icon">👥</span> View All Students' Sessions
+        </button>
+        <button class="nav-item" id="nav-inbox">
+          <span class="nav-icon">💬</span> Inbox
+        </button>
+        <span class="nav-section-label">Account</span>
+        <button class="nav-item" id="nav-profile">
+          <span class="nav-icon">👤</span> View Profile
+        </button>
+        <button class="nav-item" id="nav-logout" style="color:var(--accent-red);">
+          <span class="nav-icon">🚪</span> Log Out
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);" id="sidebar-avatar">A</div>
+          <div class="user-info">
+            <div class="name" id="sidebar-name">Dr. Ana Santos</div>
+            <div class="role">Facilitator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════ MAIN ═══════ -->
+    <div class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-icon-btn" aria-label="Toggle sidebar">☰</button>
+          <span class="topbar-title" id="topbar-title">Dashboard</span>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-ghost btn-sm" id="topbar-profile">👤 View Profile</button>
+          <button class="btn btn-danger btn-sm" id="topbar-logout">🚪 Log Out</button>
+        </div>
+      </header>
+
+      <main class="page-body">
+
+        <!-- ── HOME ── -->
+        <section class="content-section" id="section-home">
+          <div class="hero-card" style="background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));">
+            <div>
+              <p style="color:#c4b5fd;font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:8px;">FACILITATOR PANEL</p>
+              <h2 class="hero-title" id="fac-greeting">Good day, Doctor! 👩‍⚕️</h2>
+              <p class="hero-subtitle">You have pending appointment requests waiting for your review.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary" id="review-appts-btn">📥 Review Appointments</button>
+                <button class="btn btn-ghost" id="view-sessions-btn">📊 View Sessions</button>
+              </div>
+            </div>
+            <div class="hero-emoji">👩‍⚕️</div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card blue">
+              <div class="stat-icon blue">👥</div>
+              <div class="stat-info"><div class="stat-value" id="stat-total-students">0</div><div class="stat-label">Total Students</div></div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-icon orange">⏳</div>
+              <div class="stat-info"><div class="stat-value" id="stat-pending-appts">0</div><div class="stat-label">Pending Requests</div></div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon green">✅</div>
+              <div class="stat-info"><div class="stat-value" id="stat-approved-appts">0</div><div class="stat-label">Approved Sessions</div></div>
+            </div>
+            <div class="stat-card violet">
+              <div class="stat-icon violet">🗂️</div>
+              <div class="stat-info"><div class="stat-value" id="stat-done-sessions">0</div><div class="stat-label">Completed Sessions</div></div>
+            </div>
+          </div>
+
+          <h3 class="section-title">Recent Requests</h3>
+          <p class="section-subtitle">Latest student appointment requests</p>
+          <div id="home-recent-requests"></div>
+        </section>
+
+        <!-- ── APPOINTMENTS ── -->
+        <section class="content-section" id="section-appointments" style="display:none;">
+          <h2 class="section-title">📥 Student Appointment Requests</h2>
+          <p class="section-subtitle">Review and approve or reject student booking requests.</p>
+          <div class="filter-bar">
+            <input type="text" class="filter-input" id="appt-search" placeholder="🔍 Search student…" />
+            <select class="filter-input" id="appt-status-filter">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div id="appointment-requests-list"></div>
+        </section>
+
+        <!-- ── SESSIONS ── -->
+        <section class="content-section" id="section-sessions" style="display:none;">
+          <h2 class="section-title">📊 View Session</h2>
+          <p class="section-subtitle">Manage intake session status for each student.</p>
+          <div class="filter-bar">
+            <input type="text" class="filter-input" id="session-search" placeholder="🔍 Search student…" />
+            <select class="filter-input" id="session-dept-filter">
+              <option value="">All Departments</option>
+            </select>
+          </div>
+          <div class="session-table-wrap">
+            <table class="session-table">
+              <thead>
+                <tr>
+                  <th>Student</th><th>Department</th><th>Date</th>
+                  <th>Time</th><th>Intake Sessions</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="session-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ── ALL SESSIONS ── -->
+        <section class="content-section" id="section-all-sessions" style="display:none;">
+          <h2 class="section-title">👥 All Students' Session Overview</h2>
+          <p class="section-subtitle">A bird-eye view of each student's session progress.</p>
+          <div class="filter-bar">
+            <input type="text" class="filter-input" id="all-search" placeholder="🔍 Search student…" />
+          </div>
+          <div class="student-grid" id="all-students-grid"></div>
+        </section>
+
+        <!-- ── INBOX ── -->
+        <section class="content-section" id="section-inbox" style="display:none;">
+          <h2 class="section-title" style="margin-bottom:20px;">💬 Inbox</h2>
+          <div class="inbox-layout">
+            <div class="inbox-list">
+              <div class="inbox-list-header">Students</div>
+              <div id="facilitator-conversations"></div>
+            </div>
+            <div class="inbox-chat">
+              <div class="inbox-chat-header" id="fac-chat-header">
+                <div class="avatar avatar-sm">—</div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;" id="fac-chat-name">Select a student</div>
+                  <div style="font-size:12px;color:var(--text-muted);">Student</div>
+                </div>
+              </div>
+              <div class="inbox-messages" id="facilitator-messages">
+                <div style="text-align:center;color:var(--text-muted);padding:60px 0;font-size:14px;">Select a student to view the conversation.</div>
+              </div>
+              <div class="chat-input-bar">
+                <input type="text" class="chat-input" id="fac-chat-input" placeholder="Type a message…" autocomplete="off" />
+                <button class="chat-send-btn" id="fac-send-btn" aria-label="Send">➤</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PROFILE ── -->
+        <section class="content-section" id="section-profile" style="display:none;">
+          <h2 class="section-title">👤 Facilitator Profile</h2>
+          <p class="section-subtitle">Manage your profile information and photo.</p>
+
+          <div class="profile-header-card" style="background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));border-color:rgba(139,92,246,.2);">
+            <div class="profile-pic-wrap">
+              <div class="avatar-placeholder" id="fac-avatar-big" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">A</div>
+              <label for="fac-pic-input" class="pic-edit-btn" title="Change photo">📷</label>
+              <input type="file" id="fac-pic-input" accept="image/*" style="display:none;" />
+            </div>
+            <div>
+              <h3 style="font-size:22px;font-weight:800;" id="fac-profile-name">—</h3>
+              <p style="color:var(--text-secondary);font-size:14px;margin-top:4px;" id="fac-profile-dept">—</p>
+              <div style="display:flex;gap:10px;margin-top:12px;">
+                <span class="badge badge-violet">Facilitator</span>
+                <span class="badge badge-blue" id="fac-profile-contact">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="max-width:640px;">
+            <h4 class="section-title" style="font-size:16px;margin-bottom:20px;">Edit Information</h4>
+            <form id="facProfileForm">
+              <div class="form-stack">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                  <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" name="firstName" id="fpf-firstname" /></div>
+                  <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" name="lastName" id="fpf-lastname" /></div>
+                </div>
+                <div class="form-group"><label class="form-label">Department</label><input class="form-input" type="text" name="department" id="fpf-dept" /></div>
+                <div class="form-group"><label class="form-label">Contact Number</label><input class="form-input" type="tel" name="contact" id="fpf-contact" /></div>
+                <div class="form-group"><label class="form-label">Bio / Description</label><textarea class="form-input" name="bio" id="fpf-bio" rows="3" style="resize:vertical;"></textarea></div>
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- SESSION MODAL -->
+  <div class="modal-overlay" id="modal-session-status">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Update Session Status</h3>
+        <button class="modal-close" id="modal-session-close">✕</button>
+      </div>
+      <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">
+        Student: <strong id="modal-student-name">—</strong>
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><label class="form-label" style="margin-bottom:8px;display:block;">1st Session</label><div class="session-chips" id="modal-first-chips"></div></div>
+        <div><label class="form-label" style="margin-bottom:8px;display:block;">2nd Session</label><div class="session-chips" id="modal-second-chips"></div></div>
+        <div><label class="form-label" style="margin-bottom:8px;display:block;">Final Session</label><div class="session-chips" id="modal-final-chips"></div></div>
+      </div>
+      <div style="margin-top:24px;text-align:right;">
+        <button class="btn btn-ghost" id="modal-session-done">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOUT MODAL -->
+  <div class="modal-overlay" id="modal-logout">
+    <div class="modal" style="max-width:380px;text-align:center;">
+      <div style="font-size:52px;margin-bottom:12px;">🚪</div>
+      <h3 class="modal-title" style="justify-content:center;">Log Out?</h3>
+      <p style="color:var(--text-secondary);font-size:14px;margin-top:8px;margin-bottom:28px;">Are you sure you want to sign out?</p>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-ghost" id="cancel-logout">Cancel</button>
+        <button class="btn btn-danger" id="confirm-logout">Yes, Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/facilitator-dashboard.ts"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('cancel-logout')?.addEventListener('click', () => window.closeModal?.('modal-logout'));
+      document.getElementById('confirm-logout')?.addEventListener('click', () => window.Auth?.logout());
+      document.getElementById('modal-session-done')?.addEventListener('click', () => window.closeModal?.('modal-session-status'));
+    });
+  </script>
+</body>
+</html>

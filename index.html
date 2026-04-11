@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYSARCH — Choose Your Role</title>
+  <meta name="description" content="Student Guidance Appointment System — choose your role." />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+</head>
+<body class="landing">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="grid-bg"></div>
+  <div id="toast-container"></div>
+
+  <main class="landing-container">
+    <div class="landing-brand">
+      <div class="brand-logo">🎓</div>
+      <h1 class="brand-name">SYSARCH</h1>
+      <p class="brand-tagline">Student Guidance Appointment System</p>
+    </div>
+
+    <p style="color:var(--text-secondary);font-size:15px;margin-top:-30px;font-weight:500;">
+      Select your role to get started
+    </p>
+
+    <div class="role-cards">
+      <a href="/pages/student-auth.html" class="role-card student" id="role-student">
+        <div class="role-card-icon">🧑‍🎓</div>
+        <div>
+          <div class="role-card-title">Student</div>
+          <p class="role-card-desc">
+            Book appointments, track your sessions, and communicate with your guidance counselor.
+          </p>
+        </div>
+        <div class="role-card-arrow">Get Started <span>→</span></div>
+      </a>
+
+      <a href="/pages/facilitator-auth.html" class="role-card facilitator" id="role-facilitator">
+        <div class="role-card-icon">👩‍⚕️</div>
+        <div>
+          <div class="role-card-title">Facilitator</div>
+          <p class="role-card-desc">
+            Manage student appointments, track session progress, and communicate with students.
+          </p>
+        </div>
+        <div class="role-card-arrow" style="color:var(--accent-violet);">Sign In <span>→</span></div>
+      </a>
+    </div>
+
+    <p class="landing-footer">© 2026 SYSARCH — Student Guidance &amp; Appointment System</p>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
