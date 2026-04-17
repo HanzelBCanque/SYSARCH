@@ -1,13 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SYSARCH — Choose Your Role</title>
   <meta name="description" content="Student Guidance Appointment System — choose your role." />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* =========================================================
+       SYSARCH — Shared Design System
+       ========================================================= */
+    :root {
+      --bg-primary: #0a0c14;
+      --bg-secondary: #0f1220;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.08);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(99, 102, 241, 0.5);
+      --accent-blue: #6366f1;
+      --accent-violet: #8b5cf6;
+      --accent-cyan: #22d3ee;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+      --grad-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --grad-card: linear-gradient(135deg, rgba(99, 102, 241, .15) 0%, rgba(139, 92, 246, .08) 100%);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-xl: 32px;
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, .4);
+      --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ── Background Orbs ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .bg-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(99, 102, 241, .08);
+      top: -100px;
+      left: -100px;
+    }
+
+    .bg-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(139, 92, 246, .06);
+      bottom: -80px;
+      right: -80px;
+      animation-delay: -4s;
+    }
+
+    @keyframes orbFloat {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-30px) scale(1.05);
+      }
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(99, 102, 241, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, .04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Toast ── */
+    #toast-container {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: #1e2235;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+      animation: toastIn .4s ease, toastOut .4s ease 2.6s forwards;
+      box-shadow: var(--shadow-card);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+    }
+
+    /* =========================================================
+       LANDING
+       ========================================================= */
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .landing-container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 60px;
+      padding: 40px 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .landing-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      width: 72px;
+      height: 72px;
+      background: var(--grad-primary);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      box-shadow: 0 8px 32px rgba(99, 102, 241, .4);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 8px 32px rgba(99, 102, 241, .4);
+      }
+
+      50% {
+        box-shadow: 0 8px 48px rgba(99, 102, 241, .7);
+      }
+    }
+
+    .brand-name {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-tagline {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .role-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      width: 100%;
+    }
+
+    .role-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 48px 36px;
+      cursor: pointer;
+      transition: all .35s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .role-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--grad-primary);
+      opacity: 0;
+      transition: opacity .35s;
+    }
+
+    .role-card:hover::before {
+      opacity: .07;
+    }
+
+    .role-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(99, 102, 241, .3);
+    }
+
+    .role-card:active {
+      transform: translateY(-4px) scale(.98);
+    }
+
+    .role-card-icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      position: relative;
+      z-index: 1;
+      transition: var(--transition);
+    }
+
+    .role-card:hover .role-card-icon {
+      transform: scale(1.08);
+    }
+
+    .role-card.student .role-card-icon {
+      background: linear-gradient(135deg, rgba(99, 102, 241, .25), rgba(99, 102, 241, .08));
+    }
+
+    .role-card.facilitator .role-card-icon {
+      background: linear-gradient(135deg, rgba(139, 92, 246, .25), rgba(139, 92, 246, .08));
+    }
+
+    .role-card-title {
+      font-size: 22px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    .role-card-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .role-card-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      position: relative;
+      z-index: 1;
+      transition: var(--transition);
+    }
+
+    .role-card:hover .role-card-arrow {
+      gap: 14px;
+    }
+
+    .landing-footer {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width:768px) {
+      .role-cards {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+  </style>
 </head>
-<body class="landing">
+
+<body>
   <div class="bg-orb bg-orb-1"></div>
   <div class="bg-orb bg-orb-2"></div>
   <div class="grid-bg"></div>
@@ -25,7 +373,7 @@
     </p>
 
     <div class="role-cards">
-      <a href="/pages/student-auth.html" class="role-card student" id="role-student">
+      <a href="pages/student-auth.html" class="role-card student" id="role-student">
         <div class="role-card-icon">🧑‍🎓</div>
         <div>
           <div class="role-card-title">Student</div>
@@ -36,7 +384,7 @@
         <div class="role-card-arrow">Get Started <span>→</span></div>
       </a>
 
-      <a href="/pages/facilitator-auth.html" class="role-card facilitator" id="role-facilitator">
+      <a href="pages/facilitator-auth.html" class="role-card facilitator" id="role-facilitator">
         <div class="role-card-icon">👩‍⚕️</div>
         <div>
           <div class="role-card-title">Facilitator</div>
@@ -51,6 +399,66 @@
     <p class="landing-footer">© 2026 SYSARCH — Student Guidance &amp; Appointment System</p>
   </main>
 
-  <script type="module" src="/src/main.ts"></script>
+  <script>
+    // ── Seed default data ──────────────────────────────────
+    function seedData() {
+      if (!localStorage.getItem('facilitator')) {
+        localStorage.setItem('facilitator', JSON.stringify({
+          id: 'f001', firstName: 'Dr. Ana', lastName: 'Santos',
+          email: 'facilitator@sysarch.edu', password: 'facilitator123',
+          role: 'facilitator', department: 'Guidance & Counseling',
+          contact: '09171234567', bio: 'Licensed guidance counselor with 10+ years of experience.',
+          avatarInitial: 'A'
+        }));
+      }
+      if (!localStorage.getItem('students')) {
+        localStorage.setItem('students', JSON.stringify([
+          {
+            id: 's001', firstName: 'Juan', lastName: 'dela Cruz', age: 20, email: 'juan@gmail.com',
+            password: 'student123', schoolId: '2021-10001', year: '3rd Year',
+            department: 'Computer Science', contact: '09181234567', role: 'student', avatarInitial: 'J'
+          },
+          {
+            id: 's002', firstName: 'Maria', lastName: 'Reyes', age: 19, email: 'maria@gmail.com',
+            password: 'student123', schoolId: '2022-10042', year: '2nd Year',
+            department: 'Information Technology', contact: '09191234567', role: 'student', avatarInitial: 'M'
+          }
+        ]));
+      }
+      if (!localStorage.getItem('appointments')) {
+        localStorage.setItem('appointments', JSON.stringify([
+          {
+            id: 'a001', studentId: 's001', studentName: 'Juan dela Cruz',
+            date: '2026-04-14', time: '09:00 AM', reason: 'Academic concern',
+            status: 'approved', sessions: { first: 'done', second: 'pending', final: 'inactive' }
+          },
+          {
+            id: 'a002', studentId: 's002', studentName: 'Maria Reyes',
+            date: '2026-04-16', time: '02:00 PM', reason: 'Personal consultation',
+            status: 'pending', sessions: { first: 'pending', second: 'inactive', final: 'inactive' }
+          }
+        ]));
+      }
+      if (!localStorage.getItem('messages')) {
+        const now = Date.now();
+        localStorage.setItem('messages', JSON.stringify([
+          { id: 'm001', from: 'f001', to: 's001', text: 'Hello Juan! Your first session appointment has been confirmed.', timestamp: new Date(now - 3600000).toISOString() },
+          { id: 'm002', from: 's001', to: 'f001', text: 'Thank you, doc! I will be there.', timestamp: new Date(now - 1800000).toISOString() },
+          { id: 'm003', from: 'f001', to: 's002', text: 'Hi Maria! Please confirm your appointment schedule.', timestamp: new Date(now - 7200000).toISOString() }
+        ]));
+      }
+    }
+
+    seedData();
+
+    // Redirect if already logged in
+    const cu = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (cu) {
+      window.location.href = cu.role === 'facilitator'
+        ? 'pages/facilitator-dashboard.html'
+        : 'pages/student-dashboard.html';
+    }
+  </script>
 </body>
+
 </html>

@@ -1,19 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SYSARCH — Student Login / Sign Up</title>
   <meta name="description" content="Student login and registration for SYSARCH." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0c14;
+      --bg-secondary: #0f1220;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-blue: #6366f1;
+      --accent-violet: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --grad-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-xl: 32px;
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, .4);
+      --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-blue);
+      border-radius: 3px;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .bg-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(99, 102, 241, .08);
+      top: -100px;
+      left: -100px;
+    }
+
+    .bg-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(139, 92, 246, .06);
+      bottom: -80px;
+      right: -80px;
+      animation-delay: -4s;
+    }
+
+    @keyframes orbFloat {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-30px) scale(1.05);
+      }
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(99, 102, 241, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, .04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .1);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+    }
+
+    .btn-primary {
+      background: var(--grad-primary);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, .4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 28px rgba(99, 102, 241, .6);
+      transform: translateY(-1px);
+    }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-lg {
+      padding: 16px 40px;
+      font-size: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: .5px;
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, .04);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      font-size: 14px;
+      transition: var(--transition);
+      outline: none;
+      width: 100%;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
+      background: rgba(99, 102, 241, .05);
+    }
+
+    select.form-input option {
+      background: #1e2235;
+      color: var(--text-primary);
+    }
+
+    .form-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .auth-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    .auth-logo-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .auth-logo-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--grad-primary);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .auth-logo-name {
+      font-size: 22px;
+      font-weight: 800;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-card {
+      background: rgba(15, 18, 32, .9);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .5);
+    }
+
+    .auth-card-header {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .auth-card-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .auth-card-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(255, 255, 255, .04);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border-color);
+    }
+
+    .auth-tab {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .auth-tab.active {
+      background: var(--grad-primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, .4);
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-link {
+      background: none;
+      border: none;
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .auth-link:hover {
+      color: var(--accent-violet);
+    }
+
+    .password-field {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    #toast-container {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: #1e2235;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+      animation: toastIn .4s ease, toastOut .4s ease 2.6s forwards;
+      box-shadow: var(--shadow-card);
+    }
+
+    .toast.success {
+      border-color: rgba(16, 185, 129, .4);
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, .4);
+    }
+
+    .toast.info {
+      border-color: rgba(99, 102, 241, .4);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+    }
+
+    @media(max-width:520px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body class="auth-page">
+
+<body>
   <div class="bg-orb bg-orb-1"></div>
   <div class="bg-orb bg-orb-2"></div>
   <div class="grid-bg"></div>
   <div id="toast-container"></div>
 
   <div class="auth-container">
-    <a href="/" class="auth-logo-link">
+    <a href="../index.html" class="auth-logo-link">
       <div class="auth-logo-icon">🎓</div>
       <span class="auth-logo-name">SYSARCH</span>
     </a>
@@ -24,7 +444,6 @@
         <p class="auth-card-sub">Login to your account or create a new one.</p>
       </div>
 
-      <!-- Tab Toggle -->
       <div class="auth-tabs" role="tablist">
         <button class="auth-tab active" id="tab-login" role="tab">Login</button>
         <button class="auth-tab" id="tab-signup" role="tab">Sign Up</button>
@@ -36,14 +455,14 @@
           <div class="form-stack">
             <div class="form-group">
               <label class="form-label" for="login-email">Gmail Address</label>
-              <input id="login-email" class="form-input" type="email" name="email"
-                placeholder="you@gmail.com" required autocomplete="email" />
+              <input id="login-email" class="form-input" type="email" name="email" placeholder="you@gmail.com" required
+                autocomplete="email" />
             </div>
             <div class="form-group">
               <label class="form-label" for="login-password">Password</label>
               <div class="password-field">
-                <input id="login-password" class="form-input" type="password" name="password"
-                  placeholder="••••••••" required />
+                <input id="login-password" class="form-input" type="password" name="password" placeholder="••••••••"
+                  required />
                 <button type="button" class="password-toggle" aria-label="Toggle password">👁️</button>
               </div>
             </div>
@@ -66,17 +485,20 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="su-lastname">Last Name</label>
-                <input id="su-lastname" class="form-input" type="text" name="lastName" placeholder="dela Cruz" required />
+                <input id="su-lastname" class="form-input" type="text" name="lastName" placeholder="dela Cruz"
+                  required />
               </div>
             </div>
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" for="su-age">Age</label>
-                <input id="su-age" class="form-input" type="number" name="age" placeholder="18" min="15" max="60" required />
+                <input id="su-age" class="form-input" type="number" name="age" placeholder="18" min="15" max="60"
+                  required />
               </div>
               <div class="form-group">
                 <label class="form-label" for="su-contact">Contact Number</label>
-                <input id="su-contact" class="form-input" type="tel" name="contact" placeholder="09XXXXXXXXX" required />
+                <input id="su-contact" class="form-input" type="tel" name="contact" placeholder="09XXXXXXXXX"
+                  required />
               </div>
             </div>
             <div class="form-group">
@@ -86,14 +508,18 @@
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" for="su-schoolid">School ID</label>
-                <input id="su-schoolid" class="form-input" type="text" name="schoolId" placeholder="2024-10001" required />
+                <input id="su-schoolid" class="form-input" type="text" name="schoolId" placeholder="2024-10001"
+                  required />
               </div>
               <div class="form-group">
                 <label class="form-label" for="su-year">Year Level</label>
                 <select id="su-year" class="form-input" name="year" required>
                   <option value="" disabled selected>Select Year</option>
-                  <option>1st Year</option><option>2nd Year</option>
-                  <option>3rd Year</option><option>4th Year</option><option>5th Year</option>
+                  <option>1st Year</option>
+                  <option>2nd Year</option>
+                  <option>3rd Year</option>
+                  <option>4th Year</option>
+                  <option>5th Year</option>
                 </select>
               </div>
             </div>
@@ -101,11 +527,16 @@
               <label class="form-label" for="su-dept">Department / Course</label>
               <select id="su-dept" class="form-input" name="department" required>
                 <option value="" disabled selected>Select Department</option>
-                <option>Computer Science</option><option>Information Technology</option>
-                <option>Engineering</option><option>Business Administration</option>
-                <option>Education</option><option>Nursing</option>
-                <option>Architecture</option><option>Criminology</option>
-                <option>Psychology</option><option>Other</option>
+                <option>Computer Science</option>
+                <option>Information Technology</option>
+                <option>Engineering</option>
+                <option>Business Administration</option>
+                <option>Education</option>
+                <option>Nursing</option>
+                <option>Architecture</option>
+                <option>Criminology</option>
+                <option>Psychology</option>
+                <option>Other</option>
               </select>
             </div>
             <div class="form-group">
@@ -126,10 +557,145 @@
     </div>
 
     <div style="text-align:center;margin-top:20px;">
-      <a href="/" style="color:var(--text-muted);font-size:13px;">← Back to role selection</a>
+      <a href="../index.html" style="color:var(--text-muted);font-size:13px;">← Back to role selection</a>
     </div>
   </div>
 
-  <script type="module" src="/src/student-auth.ts"></script>
+  <script>
+    // ── Store helpers ──────────────────────────────────────
+    const Store = {
+      get(k, fb) { try { const r = localStorage.getItem(k); return r !== null ? JSON.parse(r) : fb; } catch { return fb; } },
+      set(k, v) { localStorage.setItem(k, JSON.stringify(v)); },
+    };
+    const getStudents = () => Store.get('students', []);
+    const setStudents = s => Store.set('students', s);
+    const getFacilitator = () => Store.get('facilitator', null);
+    const setFacilitator = f => Store.set('facilitator', f);
+    const getAppointments = () => Store.get('appointments', []);
+    const setAppointments = a => Store.set('appointments', a);
+    const getMessages = () => Store.get('messages', []);
+    const setMessages = m => Store.set('messages', m);
+    const getCurrentUser = () => Store.get('currentUser', null);
+    const setCurrentUser = u => Store.set('currentUser', u);
+
+    // ── Seed ──────────────────────────────────────────────
+    function seedData() {
+      if (!getFacilitator()) {
+        setFacilitator({ id: 'f001', firstName: 'Dr. Ana', lastName: 'Santos', email: 'facilitator@sysarch.edu', password: 'facilitator123', role: 'facilitator', department: 'Guidance & Counseling', contact: '09171234567', bio: 'Licensed guidance counselor with 10+ years of experience.', avatarInitial: 'A' });
+      }
+      if (!getStudents().length) {
+        setStudents([
+          { id: 's001', firstName: 'Juan', lastName: 'dela Cruz', age: 20, email: 'juan@gmail.com', password: 'student123', schoolId: '2021-10001', year: '3rd Year', department: 'Computer Science', contact: '09181234567', role: 'student', avatarInitial: 'J' },
+          { id: 's002', firstName: 'Maria', lastName: 'Reyes', age: 19, email: 'maria@gmail.com', password: 'student123', schoolId: '2022-10042', year: '2nd Year', department: 'Information Technology', contact: '09191234567', role: 'student', avatarInitial: 'M' }
+        ]);
+      }
+      if (!getAppointments().length) {
+        setAppointments([
+          { id: 'a001', studentId: 's001', studentName: 'Juan dela Cruz', date: '2026-04-14', time: '09:00 AM', reason: 'Academic concern', status: 'approved', sessions: { first: 'done', second: 'pending', final: 'inactive' } },
+          { id: 'a002', studentId: 's002', studentName: 'Maria Reyes', date: '2026-04-16', time: '02:00 PM', reason: 'Personal consultation', status: 'pending', sessions: { first: 'pending', second: 'inactive', final: 'inactive' } }
+        ]);
+      }
+      if (!getMessages().length) {
+        const now = Date.now();
+        setMessages([
+          { id: 'm001', from: 'f001', to: 's001', text: 'Hello Juan! Your first session appointment has been confirmed.', timestamp: new Date(now - 3600000).toISOString() },
+          { id: 'm002', from: 's001', to: 'f001', text: 'Thank you, doc! I will be there.', timestamp: new Date(now - 1800000).toISOString() },
+          { id: 'm003', from: 'f001', to: 's002', text: 'Hi Maria! Please confirm your appointment schedule.', timestamp: new Date(now - 7200000).toISOString() }
+        ]);
+      }
+    }
+    seedData();
+
+    // Redirect if already logged in as student
+    const cu = getCurrentUser();
+    if (cu && cu.role === 'student') window.location.href = 'student-dashboard.html';
+
+    // ── Toast ──────────────────────────────────────────────
+    function showToast(msg, type = 'info') {
+      const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span> ${msg}`;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3100);
+    }
+
+    // ── Password toggles ───────────────────────────────────
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inp = btn.previousElementSibling;
+        if (!inp) return;
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+      });
+    });
+
+    // ── Tab switch ─────────────────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.style.display = 'none');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      document.getElementById(`form-${tab}`).style.display = 'block';
+    }
+    document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
+    document.getElementById('tab-signup').addEventListener('click', () => switchTab('signup'));
+    document.getElementById('go-signup').addEventListener('click', () => switchTab('signup'));
+    document.getElementById('go-login').addEventListener('click', () => switchTab('login'));
+
+    // ── Helpers ────────────────────────────────────────────
+    function getInitials(fn, ln) { return ((fn?.[0] ?? '') + (ln?.[0] ?? '')).toUpperCase(); }
+
+    // ── Login ──────────────────────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true; btn.textContent = 'Logging in…';
+      const fd = new FormData(this);
+      const email = fd.get('email'), password = fd.get('password');
+      const student = getStudents().find(s => s.email === email && s.password === password);
+      if (!student) {
+        showToast('Invalid email or password.', 'error');
+        btn.disabled = false; btn.innerHTML = '🔑 Login'; return;
+      }
+      setCurrentUser({ ...student, role: 'student' });
+      showToast('Welcome back! 👋', 'success');
+      setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
+    });
+
+    // ── Sign Up ────────────────────────────────────────────
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('signup-btn');
+      btn.disabled = true; btn.textContent = 'Creating account…';
+      const fd = new FormData(this);
+      const data = Object.fromEntries(fd);
+      if (!data.firstName || !data.lastName || !data.email || !data.password) {
+        showToast('Please fill in all required fields.', 'error');
+        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+      }
+      const students = getStudents();
+      if (students.find(s => s.email === data.email)) {
+        showToast('Email already registered!', 'error');
+        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+      }
+      if (students.find(s => s.schoolId === data.schoolId)) {
+        showToast('School ID already registered!', 'error');
+        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+      }
+      const newStudent = {
+        id: 's' + Date.now(), firstName: data.firstName, lastName: data.lastName,
+        age: Number(data.age), email: data.email, password: data.password,
+        schoolId: data.schoolId, year: data.year, department: data.department,
+        contact: data.contact, role: 'student', avatarInitial: getInitials(data.firstName, data.lastName)
+      };
+      students.push(newStudent);
+      setStudents(students);
+      setCurrentUser({ ...newStudent, role: 'student' });
+      showToast('Account created! Welcome aboard 🎉', 'success');
+      setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 800);
+    });
+  </script>
 </body>
+
 </html>
