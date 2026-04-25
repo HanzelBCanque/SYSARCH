@@ -12,28 +12,28 @@
     rel="stylesheet" />
   <style>
     :root {
-      --bg-primary: #0a0c14;
-      --bg-secondary: #0f1220;
-      --bg-card: rgba(255, 255, 255, 0.04);
-      --bg-card-hover: rgba(255, 255, 255, 0.08);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --accent-blue: #6366f1;
-      --accent-violet: #8b5cf6;
-      --accent-green: #10b981;
-      --accent-orange: #f59e0b;
-      --accent-red: #ef4444;
-      --grad-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      --grad-card: linear-gradient(135deg, rgba(99, 102, 241, .15) 0%, rgba(139, 92, 246, .08) 100%);
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #475569;
+      --bg-primary: #f0f2f8;
+      --bg-secondary: #e8ebf5;
+      --bg-card: rgba(255, 255, 255, 0.75);
+      --bg-card-hover: rgba(255, 255, 255, 0.92);
+      --border-color: rgba(99, 102, 241, 0.14);
+      --accent-blue: #5b5fdc;
+      --accent-violet: #7c3aed;
+      --accent-green: #059669;
+      --accent-orange: #d97706;
+      --accent-red: #dc2626;
+      --grad-primary: linear-gradient(135deg, #5b5fdc 0%, #7c3aed 100%);
+      --grad-card: linear-gradient(135deg, rgba(91, 95, 220, .10) 0%, rgba(124, 58, 237, .06) 100%);
+      --text-primary: #1e1f3b;
+      --text-secondary: #4b5280;
+      --text-muted: #8b91b8;
       --sidebar-w: 260px;
       --topbar-h: 64px;
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 22px;
       --radius-xl: 32px;
-      --shadow-card: 0 8px 32px rgba(0, 0, 0, .4);
+      --shadow-card: 0 8px 32px rgba(91, 95, 220, .12);
       --transition: all .3s cubic-bezier(.4, 0, .2, 1);
     }
 
@@ -98,7 +98,7 @@
     .bg-orb-1 {
       width: 500px;
       height: 500px;
-      background: rgba(99, 102, 241, .08);
+      background: rgba(91, 95, 220, .12);
       top: -100px;
       left: -100px;
     }
@@ -106,7 +106,7 @@
     .bg-orb-2 {
       width: 400px;
       height: 400px;
-      background: rgba(139, 92, 246, .06);
+      background: rgba(124, 58, 237, .09);
       bottom: -80px;
       right: -80px;
       animation-delay: -4s;
@@ -221,7 +221,7 @@
     }
 
     .form-input {
-      background: rgba(255, 255, 255, .04);
+      background: rgba(255, 255, 255, .8);
       border: 1.5px solid var(--border-color);
       border-radius: var(--radius-sm);
       color: var(--text-primary);
@@ -243,7 +243,7 @@
     }
 
     select.form-input option {
-      background: #1e2235;
+      background: rgba(255, 255, 255, .9);
     }
 
     .form-stack {
@@ -346,7 +346,7 @@
     }
 
     .toast {
-      background: #1e2235;
+      background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       padding: 14px 20px;
@@ -479,7 +479,7 @@
     }
 
     .nav-item:hover {
-      background: rgba(255, 255, 255, .06);
+      background: rgba(91, 95, 220, .07);
       color: var(--text-primary);
     }
 
@@ -520,7 +520,7 @@
       gap: 10px;
       padding: 10px 12px;
       border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, .03);
+      background: rgba(91, 95, 220, .06);
     }
 
     .sidebar-user .user-info .name {
@@ -543,7 +543,7 @@
 
     .topbar {
       height: var(--topbar-h);
-      background: rgba(10, 12, 20, .8);
+      background: rgba(240, 242, 248, .88);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -753,7 +753,7 @@
     }
 
     .modal {
-      background: #111827;
+      background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 32px;
@@ -764,6 +764,7 @@
       transform: translateY(20px) scale(.97);
       transition: transform .3s cubic-bezier(.4, 0, .2, 1);
       position: relative;
+      box-shadow: 0 24px 64px rgba(91, 95, 220, .18);
     }
 
     .modal-overlay.active .modal {
