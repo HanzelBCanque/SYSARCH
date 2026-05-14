@@ -15,29 +15,26 @@
        SYSARCH — Shared Design System
        ========================================================= */
     :root {
-      --bg-primary:    #f0f2f8;
-      --bg-secondary:  #e8ebf5;
-      --bg-card:       rgba(255, 255, 255, 0.75);
-      --bg-card-hover: rgba(255, 255, 255, 0.92);
-      --border-color:  rgba(99, 102, 241, 0.14);
-      --border-glow:   rgba(99, 102, 241, 0.45);
-      --accent-blue:   #5b5fdc;
-      --accent-violet: #7c3aed;
-      --accent-cyan:   #0891b2;
-      --accent-green:  #059669;
-      --accent-orange: #d97706;
-      --accent-red:    #dc2626;
-      --grad-primary:  linear-gradient(135deg, #5b5fdc 0%, #7c3aed 100%);
-      --grad-card:     linear-gradient(135deg, rgba(91, 95, 220, .10) 0%, rgba(124, 58, 237, .06) 100%);
-      --text-primary:  #1e1f3b;
-      --text-secondary:#4b5280;
-      --text-muted:    #8b91b8;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 22px;
-      --radius-xl: 32px;
-      --shadow-card: 0 8px 32px rgba(91, 95, 220, .12);
-      --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      --bg-primary: #F8F5EE;
+      --bg-secondary: #EDE8DC;
+      --bg-card: rgba(255, 253, 248, 0.96);
+      --bg-card-hover: rgba(255, 255, 255, 1);
+      --border-color: rgba(143, 175, 138, 0.38);
+      --border-glow:   rgba(96, 165, 250, 0.65);
+      --accent-blue: #6B9B65;
+      --accent-violet: #2D5016;
+      --accent-cyan:   #38bdf8;
+      --accent-green: #4A7C40;
+      --accent-orange: #C4813A;
+      --accent-red: #B85450;
+      --grad-primary: linear-gradient(135deg, #8FAF8A 0%, #4A7C40 100%);
+      --grad-card: linear-gradient(135deg, rgba(143,175,138,0.14) 0%, rgba(74,124,64,0.07) 100%);
+      --text-primary: #1C2B18;
+      --text-secondary: #4A6344;
+      --text-muted: #8FAF8A;
+      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 22px; --radius-xl: 32px;
+      --shadow-card: 0 8px 32px rgba(45,80,22,0.10);
+      --transition: all .3s cubic-bezier(.4,0,.2,1);
     }
 
     *,
@@ -80,22 +77,8 @@
       animation: orbFloat 8s ease-in-out infinite;
     }
 
-    .bg-orb-1 {
-      width: 500px;
-      height: 500px;
-      background: rgba(91, 95, 220, .12);
-      top: -100px;
-      left: -100px;
-    }
-
-    .bg-orb-2 {
-      width: 400px;
-      height: 400px;
-      background: rgba(124, 58, 237, .09);
-      bottom: -80px;
-      right: -80px;
-      animation-delay: -4s;
-    }
+    .bg-orb-1 { width:500px;height:500px;background:rgba(143,175,138,0.18);top:-100px;left:-100px; }
+    .bg-orb-2 { width:400px;height:400px;background:rgba(74,124,64,0.10);bottom:-80px;right:-80px;animation-delay:-4s; }
 
     @keyframes orbFloat {
 
@@ -110,12 +93,9 @@
     }
 
     .grid-bg {
-      position: fixed;
-      inset: 0;
-      background-image: linear-gradient(rgba(99, 102, 241, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, .04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
+      position:fixed;inset:0;
+      background-image: linear-gradient(rgba(143,175,138,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(143,175,138,0.08) 1px,transparent 1px);
+      background-size:60px 60px;pointer-events:none;z-index:0;
     }
 
     /* ── Toast ── */
@@ -206,21 +186,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 34px;
-      box-shadow: 0 8px 32px rgba(99, 102, 241, .4);
+      box-shadow: 0 8px 32px rgba(74,124,64,0.32);
       animation: logoPulse 3s ease-in-out infinite;
     }
+    .brand-logo svg { width: 36px; height: 36px; color: #fff; }
 
     @keyframes logoPulse {
-
-      0%,
-      100% {
-        box-shadow: 0 8px 32px rgba(99, 102, 241, .4);
-      }
-
-      50% {
-        box-shadow: 0 8px 48px rgba(99, 102, 241, .7);
-      }
+      0%,100% { box-shadow:0 8px 32px rgba(74,124,64,0.32); }
+      50%      { box-shadow:0 8px 48px rgba(45,80,22,0.52); }
     }
 
     .brand-name {
@@ -278,7 +251,7 @@
     .role-card:hover {
       border-color: var(--accent-blue);
       transform: translateY(-8px);
-      box-shadow: 0 24px 60px rgba(99, 102, 241, .3);
+      box-shadow: 0 24px 60px rgba(45,80,22,0.18);
     }
 
     .role-card:active {
@@ -292,23 +265,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
       position: relative;
       z-index: 1;
       transition: var(--transition);
     }
+    .role-card-icon svg { width: 44px; height: 44px; }
 
     .role-card:hover .role-card-icon {
       transform: scale(1.08);
     }
 
     .role-card.student .role-card-icon {
-      background: linear-gradient(135deg, rgba(99, 102, 241, .25), rgba(99, 102, 241, .08));
+      background:linear-gradient(135deg,rgba(143,175,138,0.35),rgba(143,175,138,0.12));
     }
+    .role-card.student .role-card-icon svg { color: #4A7C40; }
 
     .role-card.facilitator .role-card-icon {
-      background: linear-gradient(135deg, rgba(139, 92, 246, .25), rgba(139, 92, 246, .08));
+      background:linear-gradient(135deg,rgba(45,80,22,0.22),rgba(74,124,64,0.10));
     }
+    .role-card.facilitator .role-card-icon svg { color: #2D5016; }
 
     .role-card-title {
       font-size: 22px;
@@ -363,7 +338,9 @@
 
   <main class="landing-container">
     <div class="landing-brand">
-      <div class="brand-logo">🎓</div>
+      <div class="brand-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
       <h1 class="brand-name">UCGuides</h1>
       <p class="brand-tagline">Student Guidance Appointment System</p>
     </div>
@@ -374,7 +351,9 @@
 
     <div class="role-cards">
       <a href="pages/student-auth.html" class="role-card student" id="role-student">
-        <div class="role-card-icon">🧑‍🎓</div>
+        <div class="role-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
         <div>
           <div class="role-card-title">Student</div>
           <p class="role-card-desc">
@@ -385,7 +364,9 @@
       </a>
 
       <a href="pages/facilitator-auth.html" class="role-card facilitator" id="role-facilitator">
-        <div class="role-card-icon">👩‍⚕️</div>
+        <div class="role-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
         <div>
           <div class="role-card-title">Facilitator</div>
           <p class="role-card-desc">

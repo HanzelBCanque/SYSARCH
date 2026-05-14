@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SYSARCH — Student Login / Sign Up</title>
+  <title>UCGuides — Student Login / Sign Up</title>
   <meta name="description" content="Student login and registration for SYSARCH." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,23 +12,23 @@
     rel="stylesheet" />
   <style>
     :root {
-      --bg-primary:    #f0f2f8;
-      --bg-secondary:  #e8ebf5;
-      --bg-card:       rgba(255, 255, 255, 0.75);
-      --border-color:  rgba(99, 102, 241, 0.14);
-      --accent-blue:   #5b5fdc;
-      --accent-violet: #7c3aed;
-      --accent-green:  #059669;
-      --accent-red:    #dc2626;
-      --grad-primary:  linear-gradient(135deg, #5b5fdc 0%, #7c3aed 100%);
-      --text-primary:  #1e1f3b;
-      --text-secondary:#4b5280;
-      --text-muted:    #8b91b8;
+      --bg-primary: #F8F5EE;
+      --bg-secondary: #EDE8DC;
+      --bg-card: rgba(255, 253, 248, 0.96);
+      --border-color: rgba(143, 175, 138, 0.38);
+      --accent-blue: #6B9B65;
+      --accent-violet: #2D5016;
+      --accent-green: #4A7C40;
+      --accent-red: #B85450;
+      --grad-primary: linear-gradient(135deg, #8FAF8A 0%, #4A7C40 100%);
+      --text-primary: #1C2B18;
+      --text-secondary: #4A6344;
+      --text-muted: #8FAF8A;
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 22px;
       --radius-xl: 32px;
-      --shadow-card: 0 8px 32px rgba(91, 95, 220, .12);
+      --shadow-card: 0 8px 32px rgba(45, 80, 22, 0.10);
       --transition: all .3s cubic-bezier(.4, 0, .2, 1);
     }
 
@@ -91,7 +91,7 @@
     .bg-orb-1 {
       width: 500px;
       height: 500px;
-      background: rgba(91, 95, 220, .12);
+      background: rgba(143, 175, 138, 0.18);
       top: -100px;
       left: -100px;
     }
@@ -99,7 +99,7 @@
     .bg-orb-2 {
       width: 400px;
       height: 400px;
-      background: rgba(124, 58, 237, .09);
+      background: rgba(74, 124, 64, 0.10);
       bottom: -80px;
       right: -80px;
       animation-delay: -4s;
@@ -120,7 +120,7 @@
     .grid-bg {
       position: fixed;
       inset: 0;
-      background-image: linear-gradient(rgba(99, 102, 241, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, .04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(143, 175, 138, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 175, 138, 0.08) 1px, transparent 1px);
       background-size: 60px 60px;
       pointer-events: none;
       z-index: 0;
@@ -158,11 +158,11 @@
     .btn-primary {
       background: var(--grad-primary);
       color: #fff;
-      box-shadow: 0 4px 20px rgba(99, 102, 241, .4);
+      box-shadow: 0 4px 20px rgba(74, 124, 64, 0.32);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 6px 28px rgba(99, 102, 241, .6);
+      box-shadow: 0 6px 28px rgba(45, 80, 22, 0.45);
       transform: translateY(-1px);
     }
 
@@ -207,8 +207,8 @@
 
     .form-input:focus {
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
-      background: rgba(99, 102, 241, .05);
+      box-shadow: 0 0 0 3px rgba(143, 175, 138, 0.22);
+      background: rgba(143, 175, 138, 0.06);
     }
 
     select.form-input option {
@@ -252,7 +252,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+    }
+
+    .auth-logo-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #fff;
     }
 
     .auth-logo-name {
@@ -265,12 +270,12 @@
     }
 
     .auth-card {
-      background: rgba(255, 255, 255, .85);
+      background: rgba(255, 253, 248, 0.96);
       backdrop-filter: blur(24px);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 40px;
-      box-shadow: 0 24px 64px rgba(91, 95, 220, .14);
+      box-shadow: 0 24px 64px rgba(45, 80, 22, 0.10);
     }
 
     .auth-card-header {
@@ -293,7 +298,7 @@
     .auth-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      background: rgba(91, 95, 220, .07);
+      background: rgba(143, 175, 138, 0.10);
       border-radius: var(--radius-sm);
       padding: 4px;
       gap: 4px;
@@ -316,7 +321,7 @@
     .auth-tab.active {
       background: var(--grad-primary);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(99, 102, 241, .4);
+      box-shadow: 0 4px 14px rgba(74, 124, 64, 0.32);
     }
 
     .auth-form {
@@ -392,7 +397,7 @@
     }
 
     .toast.info {
-      border-color: rgba(99, 102, 241, .4);
+      border-color: rgba(107, 155, 101, 0.50);
     }
 
     @keyframes toastIn {
@@ -434,8 +439,14 @@
 
   <div class="auth-container">
     <a href="../index.html" class="auth-logo-link">
-      <div class="auth-logo-icon">🎓</div>
-      <span class="auth-logo-name">SYSARCH</span>
+      <div class="auth-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c3 3 9 3 12 0v-5" />
+        </svg>
+      </div>
+      <span class="auth-logo-name">UCGuides</span>
     </a>
 
     <div class="auth-card">
@@ -466,7 +477,7 @@
                 <button type="button" class="password-toggle" aria-label="Toggle password">👁️</button>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">🔑 Login</button>
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">Login</button>
             <p style="text-align:center;font-size:13px;color:var(--text-muted);">
               Don't have an account? <button type="button" class="auth-link" id="go-signup">Sign Up</button>
             </p>
@@ -547,7 +558,7 @@
                 <button type="button" class="password-toggle" aria-label="Toggle password">👁️</button>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-full btn-lg" id="signup-btn">🚀 Create Account</button>
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="signup-btn">Create Account</button>
             <p style="text-align:center;font-size:13px;color:var(--text-muted);">
               Already have an account? <button type="button" class="auth-link" id="go-login">Login</button>
             </p>
@@ -656,7 +667,7 @@
       const student = getStudents().find(s => s.email === email && s.password === password);
       if (!student) {
         showToast('Invalid email or password.', 'error');
-        btn.disabled = false; btn.innerHTML = '🔑 Login'; return;
+        btn.disabled = false; btn.innerHTML = 'Login'; return;
       }
       setCurrentUser({ ...student, role: 'student' });
       showToast('Welcome back! 👋', 'success');
@@ -672,16 +683,16 @@
       const data = Object.fromEntries(fd);
       if (!data.firstName || !data.lastName || !data.email || !data.password) {
         showToast('Please fill in all required fields.', 'error');
-        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+        btn.disabled = false; btn.innerHTML = 'Create Account'; return;
       }
       const students = getStudents();
       if (students.find(s => s.email === data.email)) {
         showToast('Email already registered!', 'error');
-        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+        btn.disabled = false; btn.innerHTML = 'Create Account'; return;
       }
       if (students.find(s => s.schoolId === data.schoolId)) {
         showToast('School ID already registered!', 'error');
-        btn.disabled = false; btn.innerHTML = '🚀 Create Account'; return;
+        btn.disabled = false; btn.innerHTML = 'Create Account'; return;
       }
       const newStudent = {
         id: 's' + Date.now(), firstName: data.firstName, lastName: data.lastName,

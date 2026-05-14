@@ -10,15 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-primary:#f0f2f8; --bg-secondary:#e8ebf5; --bg-card:rgba(255,255,255,0.75); --bg-card-hover:rgba(255,255,255,0.92);
-      --border-color:rgba(99,102,241,0.14); --accent-blue:#5b5fdc; --accent-violet:#7c3aed;
-      --accent-green:#059669; --accent-orange:#d97706; --accent-red:#dc2626;
-      --grad-primary:linear-gradient(135deg,#5b5fdc 0%,#7c3aed 100%);
-      --grad-card:linear-gradient(135deg,rgba(91,95,220,.10) 0%,rgba(124,58,237,.06) 100%);
-      --text-primary:#1e1f3b; --text-secondary:#4b5280; --text-muted:#8b91b8;
+      --bg-primary:#F8F5EE; --bg-secondary:#EDE8DC; --bg-card:rgba(255,253,248,0.96); --bg-card-hover:rgba(255,255,255,1);
+      --border-color:rgba(143,175,138,0.38); --accent-blue:#6B9B65; --accent-violet:#2D5016;
+      --accent-green:#4A7C40; --accent-orange:#C4813A; --accent-red:#B85450;
+      --grad-primary:linear-gradient(135deg,#8FAF8A 0%,#4A7C40 100%);
+      --grad-card:linear-gradient(135deg,rgba(143,175,138,0.14) 0%,rgba(74,124,64,0.07) 100%);
+      --text-primary:#1C2B18; --text-secondary:#4A6344; --text-muted:#8FAF8A;
       --sidebar-w:260px; --topbar-h:64px;
       --radius-sm:8px; --radius-md:14px; --radius-lg:22px; --radius-xl:32px;
-      --shadow-card:0 8px 32px rgba(91,95,220,.12); --transition:all .3s cubic-bezier(.4,0,.2,1);
+      --shadow-card:0 8px 32px rgba(45,80,22,0.10); --transition:all .3s cubic-bezier(.4,0,.2,1);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;}
@@ -31,16 +31,16 @@
     ::-webkit-scrollbar-thumb{background:var(--accent-violet);border-radius:3px;}
 
     .bg-orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite;}
-    .bg-orb-1{width:500px;height:500px;background:rgba(91,95,220,.12);top:-100px;left:-100px;}
-    .bg-orb-2{width:400px;height:400px;background:rgba(124,58,237,.09);bottom:-80px;right:-80px;animation-delay:-4s;}
+    .bg-orb-1{width:500px;height:500px;background:rgba(143,175,138,0.18);top:-100px;left:-100px;}
+    .bg-orb-2{width:400px;height:400px;background:rgba(74,124,64,0.10);bottom:-80px;right:-80px;animation-delay:-4s;}
     @keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-30px) scale(1.05);}}
 
     /* Buttons */
     .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:var(--transition);position:relative;overflow:hidden;cursor:pointer;}
     .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s;}
     .btn:hover::after{opacity:1;}
-    .btn-primary{background:var(--grad-primary);color:#fff;box-shadow:0 4px 20px rgba(99,102,241,.4);}
-    .btn-primary:hover{box-shadow:0 6px 28px rgba(99,102,241,.6);transform:translateY(-1px);}
+    .btn-primary{background:var(--grad-primary);color:#fff;box-shadow:0 4px 20px rgba(74,124,64,0.32);}
+    .btn-primary:hover{box-shadow:0 6px 28px rgba(45,80,22,0.45);transform:translateY(-1px);}
     .btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border-color);}
     .btn-ghost:hover{color:var(--text-primary);background:var(--bg-card-hover);}
     .btn-danger{background:rgba(239,68,68,.15);color:var(--accent-red);border:1px solid rgba(239,68,68,.3);}
@@ -60,11 +60,11 @@
 
     /* Badge */
     .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.5px;}
-    .badge-blue  {background:rgba(99,102,241,.2); color:#a5b4fc;}
-    .badge-green {background:rgba(16,185,129,.2); color:#6ee7b7;}
-    .badge-orange{background:rgba(245,158,11,.2); color:#fcd34d;}
-    .badge-red   {background:rgba(239,68,68,.2);  color:#fca5a5;}
-    .badge-violet{background:rgba(139,92,246,.2); color:#c4b5fd;}
+    .badge-blue  {background:rgba(107,155,101,0.20); color:#2D5016;}
+    .badge-green {background:rgba(74,124,64,0.18);   color:#2D5016;}
+    .badge-orange{background:rgba(196,129,58,0.18);  color:#7A4F1A;}
+    .badge-red   {background:rgba(184,84,80,0.18);   color:#7C2822;}
+    .badge-violet{background:rgba(45,80,22,0.15);    color:#2D5016;}
 
     /* Avatar */
     .avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;background:var(--grad-primary);}
@@ -89,23 +89,25 @@
     .dashboard-layout{display:flex;min-height:100vh;}
     .sidebar{width:var(--sidebar-w);background:var(--bg-secondary);border-right:1px solid var(--border-color);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .35s cubic-bezier(.4,0,.2,1);}
     .sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;gap:12px;}
-    .sidebar-logo .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-    .sidebar-logo .logo-text{font-size:17px;font-weight:800;letter-spacing:-.3px;background:linear-gradient(135deg,#8b5cf6,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .sidebar-logo .logo-icon{width:38px;height:38px;background:var(--grad-primary);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+    .sidebar-logo .logo-icon svg{width:20px;height:20px;color:#fff;}
+    .sidebar-logo .logo-text{font-size:17px;font-weight:800;letter-spacing:-.3px;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
     .nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--text-secondary);transition:var(--transition);cursor:pointer;border:none;background:none;width:100%;text-align:left;position:relative;}
-    .nav-item .nav-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+    .nav-item .nav-icon{width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+    .nav-item .nav-icon svg{width:18px;height:18px;}
     .nav-item .nav-badge{margin-left:auto;background:var(--accent-violet);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;min-width:20px;text-align:center;}
-    .nav-item:hover{background:rgba(255,255,255,.06);color:var(--text-primary);}
-    .nav-item.active{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));color:var(--accent-violet);border:1px solid rgba(139,92,246,.2);}
-    .nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:0 3px 3px 0;}
+    .nav-item:hover{background:rgba(143,175,138,0.18);color:var(--text-primary);}
+    .nav-item.active{background:var(--grad-card);color:var(--accent-violet);border:1px solid rgba(143,175,138,0.38);}
+    .nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--grad-primary);border-radius:0 3px 3px 0;}
     .nav-section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text-muted);padding:12px 14px 4px;text-transform:uppercase;}
     .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border-color);}
-    .sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);background:rgba(91,95,220,.06);}
+    .sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);background:rgba(143,175,138,0.14);}
     .sidebar-user .user-info .name{font-size:13px;font-weight:600;}
     .sidebar-user .user-info .role{font-size:11px;color:var(--text-muted);}
 
     .main-content{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-    .topbar{height:var(--topbar-h);background:rgba(240,242,248,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50;}
+    .topbar{height:var(--topbar-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50;}
     .topbar-left{display:flex;align-items:center;gap:16px;}
     .topbar-title{font-size:18px;font-weight:700;}
     .topbar-right{display:flex;align-items:center;gap:12px;}
@@ -123,19 +125,19 @@
     .stat-card.orange::before{background:var(--accent-orange);}
     .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-card);}
     .stat-icon{width:50px;height:50px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:22px;}
-    .stat-icon.blue  {background:rgba(99,102,241,.15);}
-    .stat-icon.violet{background:rgba(139,92,246,.15);}
-    .stat-icon.green {background:rgba(16,185,129,.15);}
-    .stat-icon.orange{background:rgba(245,158,11,.15);}
+    .stat-icon.blue  {background:rgba(107,155,101,0.18);}
+    .stat-icon.violet{background:rgba(45,80,22,0.14);}
+    .stat-icon.green {background:rgba(74,124,64,0.16);}
+    .stat-icon.orange{background:rgba(196,129,58,0.16);}
     .stat-info .stat-value{font-size:26px;font-weight:800;}
     .stat-info .stat-label{font-size:13px;color:var(--text-secondary);margin-top:2px;}
 
     /* Hero */
-    .hero-card{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));border:1px solid rgba(139,92,246,.2);border-radius:var(--radius-lg);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;margin-bottom:32px;position:relative;overflow:hidden;}
-    .hero-card::before{content:'';position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%);right:-50px;top:-80px;border-radius:50%;}
+    .hero-card{background:var(--grad-card);border:1px solid rgba(143,175,138,0.35);border-radius:var(--radius-lg);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;margin-bottom:32px;position:relative;overflow:hidden;}
+    .hero-card::before{content:'';position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(143,175,138,0.22) 0%,transparent 70%);right:-50px;top:-80px;border-radius:50%;}
     .hero-title{font-size:28px;font-weight:800;margin-bottom:8px;}
     .hero-subtitle{font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6;}
-    .hero-emoji{font-size:80px;position:relative;z-index:1;}
+
     .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
 
     /* Appointment card */
@@ -156,9 +158,9 @@
     .session-table tbody tr:hover{background:rgba(91,95,220,.05);}
     .session-chips{display:flex;gap:6px;flex-wrap:wrap;}
     .session-chip{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid transparent;transition:var(--transition);}
-    .session-chip.pending {background:rgba(245,158,11,.15);color:#fcd34d;border-color:rgba(245,158,11,.3);}
-    .session-chip.done    {background:rgba(16,185,129,.15); color:#6ee7b7;border-color:rgba(16,185,129,.3);}
-    .session-chip.inactive{background:rgba(71,85,105,.2);   color:var(--text-muted);border-color:rgba(71,85,105,.3);}
+    .session-chip.pending {background:rgba(245,158,11,.15);color:#000;border-color:rgba(245,158,11,.3);}
+    .session-chip.done    {background:rgba(16,185,129,.15); color:#000;border-color:rgba(16,185,129,.3);}
+    .session-chip.inactive{background:rgba(71,85,105,.2);   color:#000;border-color:rgba(71,85,105,.3);}
     .session-chip:hover   {filter:brightness(1.2);transform:scale(1.05);}
 
     /* Student grid */
@@ -170,8 +172,8 @@
     .student-card-meta{font-size:12px;color:var(--text-secondary);margin-top:2px;}
 
     /* Profile */
-    .profile-header-card{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));border:1px solid rgba(139,92,246,.2);border-radius:var(--radius-lg);padding:32px;display:flex;align-items:center;gap:28px;margin-bottom:28px;}
-    .avatar-placeholder{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6366f1);border:3px solid var(--accent-violet);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:#fff;}
+    .profile-header-card{background:var(--grad-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:32px;display:flex;align-items:center;gap:28px;margin-bottom:28px;}
+    .avatar-placeholder{width:110px;height:110px;border-radius:50%;background:var(--grad-primary);border:3px solid var(--accent-violet);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:#fff;}
     .profile-pic-wrap{position:relative;}
     .pic-edit-btn{position:absolute;bottom:4px;right:4px;width:30px;height:30px;background:var(--accent-violet);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:2px solid var(--bg-primary);transition:var(--transition);}
     .pic-edit-btn:hover{background:var(--accent-blue);transform:scale(1.1);}
@@ -198,7 +200,7 @@
     .inbox-list-header{padding:16px 20px;border-bottom:1px solid var(--border-color);font-size:14px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;}
     .conversation-item{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;transition:var(--transition);border-bottom:1px solid var(--border-color);}
     .conversation-item:hover{background:rgba(255,255,255,.04);}
-    .conversation-item.active{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));border-right:2px solid var(--accent-violet);}
+    .conversation-item.active{background:linear-gradient(135deg, rgba(143,175,138,0.14) 0%, rgba(74,124,64,0.07) 100%);border-right:2px solid var(--accent-blue);}
     .conv-info{flex:1;min-width:0;}
     .conv-name{font-size:14px;font-weight:600;}
     .conv-preview{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
@@ -215,8 +217,8 @@
     .chat-input-bar{padding:16px 24px;border-top:1px solid var(--border-color);display:flex;gap:12px;align-items:center;background:var(--bg-secondary);}
     .chat-input{flex:1;background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:999px;color:var(--text-primary);padding:11px 20px;font-size:14px;outline:none;transition:var(--transition);font-family:inherit;}
     .chat-input:focus{border-color:var(--accent-violet);}
-    .chat-send-btn{width:42px;height:42px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border:none;border-radius:50%;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);}
-    .chat-send-btn:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(139,92,246,.5);}
+    .chat-send-btn{width:42px;height:42px;background:var(--grad-primary);border:none;border-radius:50%;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);}
+    .chat-send-btn:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(74,124,64,0.42);}
 
     @media(max-width:768px){
       .sidebar{transform:translateX(-100%);}
@@ -238,22 +240,24 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="logo-icon">👩‍⚕️</div>
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
         <span class="logo-text">SYSARCH</span>
       </div>
       <nav class="sidebar-nav">
         <span class="nav-section-label">Main Menu</span>
-        <button class="nav-item active" id="nav-home"><span class="nav-icon">🏠</span> Dashboard</button>
+        <button class="nav-item active" id="nav-home"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</button>
         <button class="nav-item" id="nav-appointments">
-          <span class="nav-icon">📥</span> Student Appointments
+          <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> Student Appointments
           <span class="nav-badge" id="pending-badge" style="display:none;">0</span>
         </button>
-        <button class="nav-item" id="nav-sessions"><span class="nav-icon">📊</span> View Session</button>
-        <button class="nav-item" id="nav-all-sessions"><span class="nav-icon">👥</span> All Students' Sessions</button>
-        <button class="nav-item" id="nav-inbox"><span class="nav-icon">💬</span> Inbox</button>
+        <button class="nav-item" id="nav-sessions"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> View Session</button>
+        <button class="nav-item" id="nav-all-sessions"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> All Students' Sessions</button>
+        <button class="nav-item" id="nav-inbox"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> Inbox</button>
         <span class="nav-section-label">Account</span>
-        <button class="nav-item" id="nav-profile"><span class="nav-icon">👤</span> View Profile</button>
-        <button class="nav-item" id="nav-logout" style="color:var(--accent-red);"><span class="nav-icon">🚪</span> Log Out</button>
+        <button class="nav-item" id="nav-profile"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span> View Profile</button>
+        <button class="nav-item" id="nav-logout" style="color:var(--accent-red);"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Log Out</button>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
@@ -285,15 +289,17 @@
         <section class="content-section" id="section-home">
           <div class="hero-card">
             <div>
-              <p style="color:#c4b5fd;font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:8px;">FACILITATOR PANEL</p>
-              <h2 class="hero-title" id="fac-greeting">Good day, Doctor! 👩‍⚕️</h2>
+              <p style="color:var(--accent-violet);font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:8px;">FACILITATOR PANEL</p>
+              <h2 class="hero-title" id="fac-greeting">Good day, Doctor!</h2>
               <p class="hero-subtitle">You have pending appointment requests waiting for your review.</p>
               <div class="hero-actions">
                 <button class="btn btn-primary" id="review-appts-btn">📥 Review Appointments</button>
                 <button class="btn btn-ghost" id="view-sessions-btn">📊 View Sessions</button>
               </div>
             </div>
-            <div class="hero-emoji">👩‍⚕️</div>
+            <div style="position:relative;z-index:1;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:80px;height:80px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
           </div>
           <div class="stats-grid">
             <div class="stat-card blue"><div class="stat-icon blue">👥</div><div class="stat-info"><div class="stat-value" id="stat-total-students">0</div><div class="stat-label">Total Students</div></div></div>
@@ -410,7 +416,7 @@
                 <div class="form-group"><label class="form-label">Department</label><input class="form-input" type="text" name="department" id="fpf-dept" /></div>
                 <div class="form-group"><label class="form-label">Contact Number</label><input class="form-input" type="tel" name="contact" id="fpf-contact" /></div>
                 <div class="form-group"><label class="form-label">Bio / Description</label><textarea class="form-input" name="bio" id="fpf-bio" rows="3" style="resize:vertical;"></textarea></div>
-                <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">💾 Save Changes</button>
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
               </div>
             </form>
           </div>
@@ -554,7 +560,13 @@
     // ── Init ───────────────────────────────────────────────
     function initDashboard(){
       const initials=getInitials(user.firstName,user.lastName);
-      el('sidebar-avatar').textContent=initials;
+      const av=el('sidebar-avatar');
+      if (user.avatarImage) {
+        av.style.background = `url(${user.avatarImage}) center/cover`;
+        av.textContent = '';
+      } else {
+        av.textContent = initials;
+      }
       el('sidebar-name').textContent=user.firstName+' '+user.lastName;
       el('fac-greeting').textContent='Good day, '+user.firstName+'! 👩‍⚕️';
       loadStats(); loadHomeRecentRequests(); updatePendingBadge(); loadFacProfile();
@@ -577,13 +589,15 @@
 
     // ── Appointment Card ────────────────────────────────────
     function buildApptCard(a){
+      const student=getStudents().find(s=>s.id===a.studentId);
+      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-md" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md">${twoInitials(a.studentName)}</div>`;
       const sc={pending:'badge-orange',approved:'badge-green',rejected:'badge-red'};
       const actions=a.status==='pending'
         ?`<button class="btn btn-sm" style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);" data-approve="${a.id}">✅ Approve</button>
            <button class="btn btn-sm btn-danger" data-reject="${a.id}">❌ Reject</button>`
         :`<button class="btn btn-ghost btn-sm" data-sessions="${a.id}">📊 Sessions</button>`;
       return `<div class="appt-request-card" id="appt-card-${a.id}">
-        <div class="avatar avatar-md">${twoInitials(a.studentName)}</div>
+        ${avatarHtml}
         <div class="appt-info">
           <div class="appt-name">${a.studentName}</div>
           <div class="appt-meta"><span>📅 ${formatDate(a.date)}</span><span>⏰ ${a.time}</span><span>📝 ${a.reason}</span></div>
@@ -628,8 +642,20 @@
     function approveAppt(id){
       const appts=getAppointments(); const apt=appts.find(a=>a.id===id); if(!apt)return;
       apt.status='approved'; setAppointments(appts);
+      
+      const msgs = getMessages();
+      msgs.push({
+        id: 'm' + Date.now(),
+        from: user.id,
+        to: apt.studentId,
+        text: `Hello there! I have confirmed your appointment for ${formatDate(apt.date)} at ${apt.time}. See you! 👋`,
+        timestamp: new Date().toISOString()
+      });
+      setMessages(msgs);
+      
       showToast('Appointment approved!','success');
       loadStats(); updatePendingBadge(); loadHomeRecentRequests(); renderAppointmentRequests();
+      if(el('section-inbox').style.display==='block'){ loadFacilitatorInbox(); if(currentChatStudentId===apt.studentId) renderFacMessages(); }
     }
     function rejectAppt(id){
       const appts=getAppointments(); const apt=appts.find(a=>a.id===id); if(!apt)return;
@@ -687,10 +713,11 @@
       const SC={pending:'badge-orange',approved:'badge-green',rejected:'badge-red'};
       tbody.innerHTML=appts.map(a=>{
         const student=students.find(s=>s.id===a.studentId);
+        const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${twoInitials(a.studentName)}</div>`;
         const chips=Object.entries(a.sessions).map(([k,v])=>`<span class="session-chip ${v}" data-sessions="${a.id}" style="cursor:pointer;">${SL[k]||k} Session</span>`).join('');
         return `<tr>
           <td><div style="display:flex;align-items:center;gap:10px;">
-            <div class="avatar avatar-sm">${twoInitials(a.studentName)}</div>
+            ${avatarHtml}
             <div><div style="font-weight:600;">${a.studentName}</div><div style="font-size:12px;color:var(--text-muted);">${student?.schoolId||'—'}</div></div>
           </div></td>
           <td><span class="badge badge-blue">${student?.department||'—'}</span></td>
@@ -728,10 +755,11 @@
             </div>`).join('')
           :'<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No appointments yet.</div>';
         const initials=getInitials(s.firstName,s.lastName);
+        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-md" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md">${initials}</div>`;
         const totalDone=studentAppts.reduce((acc,a)=>acc+Object.values(a.sessions).filter(sv=>sv==='done').length,0);
         return `<div class="student-card">
           <div class="student-card-top">
-            <div class="avatar avatar-md">${initials}</div>
+            ${avatarHtml}
             <div>
               <div class="student-card-name">${s.firstName} ${s.lastName}</div>
               <div class="student-card-meta">${s.year} · ${s.department}</div>
@@ -768,11 +796,12 @@
       const c=el('facilitator-conversations');
       c.innerHTML=students.map(s=>{
         const initials=getInitials(s.firstName,s.lastName);
+        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${initials}</div>`;
         const msgs=getConversation(user.id,s.id);
         const last=msgs[msgs.length-1];
         return `<div class="conversation-item ${currentChatStudentId===s.id?'active':''}"
             data-chat-student="${s.id}" data-chat-name="${s.firstName} ${s.lastName}">
-          <div class="avatar avatar-sm">${initials}</div>
+          ${avatarHtml}
           <div class="conv-info">
             <div class="conv-name">${s.firstName} ${s.lastName}</div>
             <div class="conv-preview">${last?last.text:'No messages yet'}</div>
@@ -791,7 +820,15 @@
     function openFacChat(studentId,studentName){
       currentChatStudentId=studentId;
       el('fac-chat-name').textContent=studentName;
-      el('fac-chat-header').querySelector('.avatar').textContent=twoInitials(studentName);
+      const student=getStudents().find(s=>s.id===studentId);
+      const av=el('fac-chat-header').querySelector('.avatar');
+      if (student?.avatarImage) {
+        av.style.background = `url(${student.avatarImage}) center/cover`;
+        av.textContent = '';
+      } else {
+        av.style.background = 'var(--grad-primary)';
+        av.textContent = twoInitials(studentName);
+      }
       loadFacilitatorInbox();
     }
 
@@ -801,10 +838,12 @@
       const c=el('facilitator-messages');
       const initials=el('fac-chat-header').querySelector('.avatar')?.textContent||'?';
       if(!msgs.length){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;">Start the conversation! 👋</div>';return;}
+      const student=getStudents().find(s=>s.id===currentChatStudentId);
+      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${initials}</div>`;
       c.innerHTML=msgs.map(m=>{
         const isSent=m.from===user.id;
         return `<div class="message-row ${isSent?'sent':''}">
-          ${!isSent?`<div class="avatar avatar-sm">${initials}</div>`:''}
+          ${!isSent?avatarHtml:''}
           <div>
             <div class="message-bubble ${isSent?'sent':'received'}">${m.text}</div>
             <div class="message-time" style="text-align:${isSent?'right':'left'};margin-top:4px;">${formatTime(m.timestamp)}</div>
@@ -831,7 +870,13 @@
     function loadFacProfile(){
       const fac=getFacilitator();
       const initials=getInitials(fac.firstName,fac.lastName);
-      el('fac-avatar-big').textContent=initials;
+      const av=el('fac-avatar-big');
+      if (fac.avatarImage) {
+        av.style.background = `url(${fac.avatarImage}) center/cover`;
+        av.textContent = '';
+      } else {
+        av.textContent = initials;
+      }
       el('fac-profile-name').textContent=fac.firstName+' '+fac.lastName;
       el('fac-profile-dept').textContent=fac.department;
       el('fac-profile-contact').textContent='📞 '+(fac.contact||'—');
@@ -860,9 +905,37 @@
       const file=this.files?.[0]; if(!file)return;
       const reader=new FileReader();
       reader.onload=ev=>{
-        const av=el('fac-avatar-big');
-        av.style.background=`url(${ev.target.result}) center/cover`;
-        av.textContent='';
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX = 300;
+          let w = img.width, h = img.height;
+          if(w>h){if(w>MAX){h*=MAX/w;w=MAX;}}else{if(h>MAX){w*=MAX/h;h=MAX;}}
+          canvas.width=w; canvas.height=h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          const imgData = canvas.toDataURL('image/jpeg',0.8);
+          
+          const av=el('fac-avatar-big');
+          av.style.background=`url(${imgData}) center/cover`;
+          av.textContent='';
+          
+          try {
+            const fac = getFacilitator();
+            fac.avatarImage = imgData;
+            setFacilitator(fac);
+            user.avatarImage = imgData;
+            setCurrentUser(user);
+            
+            const sideAv = el('sidebar-avatar');
+            sideAv.style.background = `url(${imgData}) center/cover`;
+            sideAv.textContent = '';
+            showToast('Profile picture updated! ✅','success');
+          } catch(err) {
+            showToast('Image too large to save!','error');
+            console.error(err);
+          }
+        };
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     });

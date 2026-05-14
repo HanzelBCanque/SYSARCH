@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SYSARCH — Facilitator Login</title>
+  <title>UCGuides — Facilitator Login</title>
   <meta name="description" content="Facilitator sign-in for SYSARCH guidance appointment system." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,19 +12,19 @@
     rel="stylesheet" />
   <style>
     :root {
-      --bg-primary:    #f0f2f8;
-      --bg-secondary:  #e8ebf5;
-      --bg-card:       rgba(255, 255, 255, 0.75);
-      --border-color:  rgba(99, 102, 241, 0.14);
-      --accent-blue:   #5b5fdc;
-      --accent-violet: #7c3aed;
-      --grad-primary:  linear-gradient(135deg, #5b5fdc 0%, #7c3aed 100%);
-      --text-primary:  #1e1f3b;
-      --text-secondary:#4b5280;
-      --text-muted:    #8b91b8;
+      --bg-primary: #F8F5EE;
+      --bg-secondary: #EDE8DC;
+      --bg-card: rgba(255, 253, 248, 0.96);
+      --border-color: rgba(143, 175, 138, 0.38);
+      --accent-blue: #6B9B65;
+      --accent-violet: #2D5016;
+      --grad-primary: linear-gradient(135deg, #8FAF8A 0%, #4A7C40 100%);
+      --text-primary: #1C2B18;
+      --text-secondary: #4A6344;
+      --text-muted: #8FAF8A;
       --radius-sm: 8px;
       --radius-xl: 32px;
-      --shadow-card: 0 8px 32px rgba(91, 95, 220, .12);
+      --shadow-card: 0 8px 32px rgba(45, 80, 22, 0.10);
       --transition: all .3s cubic-bezier(.4, 0, .2, 1);
     }
 
@@ -87,7 +87,7 @@
     .bg-orb-1 {
       width: 500px;
       height: 500px;
-      background: rgba(91, 95, 220, .12);
+      background: rgba(143, 175, 138, 0.18);
       top: -100px;
       left: -100px;
     }
@@ -95,7 +95,7 @@
     .bg-orb-2 {
       width: 400px;
       height: 400px;
-      background: rgba(124, 58, 237, .09);
+      background: rgba(74, 124, 64, 0.10);
       bottom: -80px;
       right: -80px;
       animation-delay: -4s;
@@ -116,7 +116,7 @@
     .grid-bg {
       position: fixed;
       inset: 0;
-      background-image: linear-gradient(rgba(99, 102, 241, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, .04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(143, 175, 138, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 175, 138, 0.08) 1px, transparent 1px);
       background-size: 60px 60px;
       pointer-events: none;
       z-index: 0;
@@ -146,6 +146,17 @@
     .btn-lg {
       padding: 16px 40px;
       font-size: 16px;
+    }
+
+    .btn-primary {
+      background: var(--grad-primary);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(74, 124, 64, 0.32);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 28px rgba(45, 80, 22, 0.45);
+      transform: translateY(-1px);
     }
 
     .form-group {
@@ -178,9 +189,9 @@
     }
 
     .form-input:focus {
-      border-color: var(--accent-violet);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, .15);
-      background: rgba(139, 92, 246, .05);
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(143, 175, 138, 0.22);
+      background: rgba(143, 175, 138, 0.06);
     }
 
     .form-stack {
@@ -208,12 +219,17 @@
     .auth-logo-icon {
       width: 42px;
       height: 42px;
-      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      background: var(--grad-primary);
       border-radius: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+    }
+
+    .auth-logo-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #fff;
     }
 
     .auth-logo-name {
@@ -226,12 +242,12 @@
     }
 
     .auth-card {
-      background: rgba(255, 255, 255, .85);
+      background: rgba(255, 253, 248, 0.96);
       backdrop-filter: blur(24px);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 40px;
-      box-shadow: 0 24px 64px rgba(91, 95, 220, .14);
+      box-shadow: 0 24px 64px rgba(45, 80, 22, 0.10);
     }
 
     .auth-card-header {
@@ -337,19 +353,35 @@
 
   <div class="auth-container">
     <a href="../index.html" class="auth-logo-link">
-      <div class="auth-logo-icon">👩‍⚕️</div>
-      <span class="auth-logo-name">SYSARCH</span>
+      <div class="auth-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <span class="auth-logo-name">UCGuides</span>
     </a>
 
     <div class="auth-card">
       <div class="auth-card-header">
-        <div style="font-size:48px;margin-bottom:12px;">👩‍⚕️</div>
+        <div style="font-size:48px;margin-bottom:12px;display:flex;justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4a9de0" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round" style="width:52px;height:52px;">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
         <h1 class="auth-card-title">Facilitator Portal</h1>
         <p class="auth-card-sub">Sign in with your facilitator credentials to access the dashboard.</p>
       </div>
 
       <div
-        style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#c4b5fd;display:flex;align-items:center;gap:10px;">
+        style="background:rgba(143,175,138,0.14);border:1px solid rgba(107,155,101,0.30);border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#2D5016;display:flex;align-items:center;gap:10px;">
         <span>💡</span>
         <div><strong>Demo credentials:</strong><br />
           Email: <code>facilitator@sysarch.edu</code> &nbsp;|&nbsp; Password: <code>facilitator123</code>
@@ -371,9 +403,8 @@
               <button type="button" class="password-toggle" aria-label="Toggle password">👁️</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-full btn-lg" id="fac-login-btn"
-            style="background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;border:none;box-shadow:0 4px 20px rgba(139,92,246,.4);">
-            🔑 Sign In as Facilitator
+          <button type="submit" class="btn btn-full btn-lg btn-primary" id="fac-login-btn">
+            Sign In as Facilitator
           </button>
         </div>
       </form>
