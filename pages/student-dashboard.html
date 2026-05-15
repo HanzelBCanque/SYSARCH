@@ -1746,13 +1746,13 @@
 
     // ── Init ───────────────────────────────────────────────
     function initDashboard() {
-      const initials = getInitials(user.firstName, user.lastName);
       const av = el('sidebar-avatar');
       if (user.avatarImage) {
         av.style.background = `url(${user.avatarImage}) center/cover`;
-        av.textContent = '';
+        av.innerHTML = '';
       } else {
-        av.textContent = initials;
+        av.style.background = 'var(--grad-primary)';
+        av.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       el('sidebar-name').textContent = user.firstName + ' ' + user.lastName;
       el('hero-greeting').textContent = 'Hello, ' + user.firstName + '! 👋';
@@ -1834,8 +1834,7 @@
     function loadStudentInbox() {
       const fac = getFacilitator();
       if (!fac) return;
-      const initials = getInitials(fac.firstName, fac.lastName);
-      const avatarHtml = fac.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${fac.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm" style="background:var(--grad-primary);">${initials}</div>`;
+      const avatarHtml = fac.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${fac.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm" style="background:var(--grad-primary);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
       
       el('student-conversations').innerHTML = `<div class="conversation-item active">
         ${avatarHtml}
@@ -1845,10 +1844,10 @@
       const chatHeaderAv = el('chat-header').querySelector('.avatar');
       if (fac.avatarImage) {
         chatHeaderAv.style.background = `url(${fac.avatarImage}) center/cover`;
-        chatHeaderAv.textContent = '';
+        chatHeaderAv.innerHTML = '';
       } else {
         chatHeaderAv.style.background = 'var(--grad-primary)';
-        chatHeaderAv.textContent = initials;
+        chatHeaderAv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       el('chat-header').querySelector('div > div:first-child').textContent = fac.firstName + ' ' + fac.lastName;
 
@@ -1865,8 +1864,7 @@
       const c = el('student-messages');
       if (!msgs.length) { c.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;">No messages yet. Say hello! 👋</div>'; return; }
       const fac = getFacilitator();
-      const initials = getInitials(fac?.firstName, fac?.lastName);
-      const avatarHtml = fac?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${fac.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm" style="background:var(--grad-primary);">${initials}</div>`;
+      const avatarHtml = fac?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${fac.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm" style="background:var(--grad-primary);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
       c.innerHTML = msgs.map(m => {
         const isSent = m.from === user.id;
         return `<div class="message-row ${isSent ? 'sent' : ''}">
@@ -1894,13 +1892,13 @@
 
     // ── Profile ────────────────────────────────────────────
     function loadProfile() {
-      const initials = getInitials(user.firstName, user.lastName);
       const av = el('profile-avatar-big');
       if (user.avatarImage) {
         av.style.background = `url(${user.avatarImage}) center/cover`;
-        av.textContent = '';
+        av.innerHTML = '';
       } else {
-        av.textContent = initials;
+        av.style.background = 'var(--grad-primary)';
+        av.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       el('profile-fullname').textContent = user.firstName + ' ' + user.lastName;
       el('profile-schoolid').textContent = 'School ID: ' + user.schoolId;

@@ -263,7 +263,7 @@
         <div class="sidebar-user">
           <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);" id="sidebar-avatar">A</div>
           <div class="user-info">
-            <div class="name" id="sidebar-name">Dr. Ana Santos</div>
+            <div class="name" id="sidebar-name"></div>
             <div class="role">Facilitator</div>
           </div>
         </div>
@@ -559,13 +559,13 @@
 
     // ── Init ───────────────────────────────────────────────
     function initDashboard(){
-      const initials=getInitials(user.firstName,user.lastName);
       const av=el('sidebar-avatar');
       if (user.avatarImage) {
         av.style.background = `url(${user.avatarImage}) center/cover`;
-        av.textContent = '';
+        av.innerHTML = '';
       } else {
-        av.textContent = initials;
+        av.style.background = 'var(--grad-primary)';
+        av.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       el('sidebar-name').textContent=user.firstName+' '+user.lastName;
       el('fac-greeting').textContent='Good day, '+user.firstName+'! 👩‍⚕️';
@@ -590,7 +590,7 @@
     // ── Appointment Card ────────────────────────────────────
     function buildApptCard(a){
       const student=getStudents().find(s=>s.id===a.studentId);
-      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-md" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md">${twoInitials(a.studentName)}</div>`;
+      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-md" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
       const sc={pending:'badge-orange',approved:'badge-green',rejected:'badge-red'};
       const actions=a.status==='pending'
         ?`<button class="btn btn-sm" style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);" data-approve="${a.id}">✅ Approve</button>
@@ -604,7 +604,10 @@
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
           <span class="badge ${sc[a.status]||'badge-blue'}">${a.status}</span>
-          <div class="appt-actions">${actions}</div>
+          <div class="appt-actions" style="display:flex;gap:8px;">
+            ${actions}
+            <button class="btn btn-sm btn-ghost" data-delete="${a.id}" title="Delete Appointment" style="padding: 8px 12px; color: var(--accent-red); border-color: rgba(184, 84, 80, 0.2);">🗑️</button>
+          </div>
         </div>
       </div>`;
     }
@@ -613,6 +616,7 @@
       container.querySelectorAll('[data-approve]').forEach(btn=>btn.addEventListener('click',()=>approveAppt(btn.dataset.approve)));
       container.querySelectorAll('[data-reject]').forEach(btn=>btn.addEventListener('click',()=>rejectAppt(btn.dataset.reject)));
       container.querySelectorAll('[data-sessions]').forEach(btn=>btn.addEventListener('click',()=>openSessionModal(btn.dataset.sessions)));
+      container.querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteAppt(btn.dataset.delete)));
     }
 
     function loadHomeRecentRequests(){
@@ -661,6 +665,14 @@
       const appts=getAppointments(); const apt=appts.find(a=>a.id===id); if(!apt)return;
       apt.status='rejected'; setAppointments(appts);
       showToast('Appointment rejected.','error');
+      loadStats(); updatePendingBadge(); loadHomeRecentRequests(); renderAppointmentRequests();
+    }
+
+    function deleteAppt(id){
+      if(!confirm('Are you sure you want to delete this appointment record? This cannot be undone.')) return;
+      const appts=getAppointments().filter(a=>a.id!==id);
+      setAppointments(appts);
+      showToast('Appointment deleted successfully.','info');
       loadStats(); updatePendingBadge(); loadHomeRecentRequests(); renderAppointmentRequests();
     }
 
@@ -713,7 +725,7 @@
       const SC={pending:'badge-orange',approved:'badge-green',rejected:'badge-red'};
       tbody.innerHTML=appts.map(a=>{
         const student=students.find(s=>s.id===a.studentId);
-        const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${twoInitials(a.studentName)}</div>`;
+        const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
         const chips=Object.entries(a.sessions).map(([k,v])=>`<span class="session-chip ${v}" data-sessions="${a.id}" style="cursor:pointer;">${SL[k]||k} Session</span>`).join('');
         return `<tr>
           <td><div style="display:flex;align-items:center;gap:10px;">
@@ -754,8 +766,7 @@
               <span class="badge ${CM[v]||'badge-blue'}">${v}</span>
             </div>`).join('')
           :'<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No appointments yet.</div>';
-        const initials=getInitials(s.firstName,s.lastName);
-        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-md" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md">${initials}</div>`;
+        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-md" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
         const totalDone=studentAppts.reduce((acc,a)=>acc+Object.values(a.sessions).filter(sv=>sv==='done').length,0);
         return `<div class="student-card">
           <div class="student-card-top">
@@ -795,8 +806,7 @@
       const students=getStudents();
       const c=el('facilitator-conversations');
       c.innerHTML=students.map(s=>{
-        const initials=getInitials(s.firstName,s.lastName);
-        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${initials}</div>`;
+        const avatarHtml = s.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${s.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
         const msgs=getConversation(user.id,s.id);
         const last=msgs[msgs.length-1];
         return `<div class="conversation-item ${currentChatStudentId===s.id?'active':''}"
@@ -824,10 +834,10 @@
       const av=el('fac-chat-header').querySelector('.avatar');
       if (student?.avatarImage) {
         av.style.background = `url(${student.avatarImage}) center/cover`;
-        av.textContent = '';
+        av.innerHTML = '';
       } else {
         av.style.background = 'var(--grad-primary)';
-        av.textContent = twoInitials(studentName);
+        av.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       loadFacilitatorInbox();
     }
@@ -839,7 +849,7 @@
       const initials=el('fac-chat-header').querySelector('.avatar')?.textContent||'?';
       if(!msgs.length){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;">Start the conversation! 👋</div>';return;}
       const student=getStudents().find(s=>s.id===currentChatStudentId);
-      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm">${initials}</div>`;
+      const avatarHtml = student?.avatarImage ? `<div class="avatar avatar-sm" style="background:url(${student.avatarImage}) center/cover;"></div>` : `<div class="avatar avatar-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
       c.innerHTML=msgs.map(m=>{
         const isSent=m.from===user.id;
         return `<div class="message-row ${isSent?'sent':''}">
@@ -873,9 +883,10 @@
       const av=el('fac-avatar-big');
       if (fac.avatarImage) {
         av.style.background = `url(${fac.avatarImage}) center/cover`;
-        av.textContent = '';
+        av.innerHTML = '';
       } else {
-        av.textContent = initials;
+        av.style.background = 'var(--grad-primary)';
+        av.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;color:#fff;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       el('fac-profile-name').textContent=fac.firstName+' '+fac.lastName;
       el('fac-profile-dept').textContent=fac.department;

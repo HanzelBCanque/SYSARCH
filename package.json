@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"nodemon server/index.js\"",
+    "dev:frontend": "vite",
+    "dev:backend": "nodemon server/index.js",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
