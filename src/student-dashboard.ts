@@ -3,7 +3,6 @@
 // =========================================================
 
 import './style.css';
-import { seedData } from './seed';
 import { Auth } from './auth';
 import {
   showToast, openModal, closeModal,
@@ -11,12 +10,11 @@ import {
   formatDate, formatTime, twoInitials,
 } from './ui';
 import {
-  bookAppointment, sendMessage, getConversation,
+  bookAppointment, sendMessage, getConversation, saveStudentProfile,
 } from './actions';
-import { getAppointments, getStudents, setStudents, getFacilitator, setCurrentUser } from './store';
+import { getAppointments, getStudents, getFacilitator, setCurrentUser } from './store';
 import type { Student, Appointment } from './types';
 
-seedData();
 setupModalOverlayClose();
 
 // ── Auth Guard ───────────────────────────────────────────
@@ -61,12 +59,10 @@ function navigate(section: Section): void {
   if (section === 'inbox') loadStudentInbox();
 }
 
-// Wire nav buttons
 document.querySelectorAll<HTMLButtonElement>('[data-nav]').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset['nav'] as Section));
 });
 
-// ── Sidebar toggle ───────────────────────────────────────
 el('sidebar-toggle')?.addEventListener('click', () =>
   el('sidebar').classList.toggle('open'),
 );
@@ -77,27 +73,36 @@ el('nav-logout')?.addEventListener('click', confirmLogout);
 el('topbar-logout')?.addEventListener('click', confirmLogout);
 el('topbar-profile')?.addEventListener('click', () => navigate('profile'));
 
+// ── Avatar helper ─────────────────────────────────────────
+function applyAvatar(el: HTMLElement, user: Student): void {
+  if (user.profilePicture) {
+    el.style.background = `url(${user.profilePicture}) center/cover`;
+    el.textContent = '';
+  } else {
+    el.style.background = '';
+    el.textContent = getInitials(user.firstName, user.lastName);
+  }
+}
+
 // ── Initialise ───────────────────────────────────────────
-function initDashboard(): void {
-  const initials = getInitials(user.firstName, user.lastName);
-  el('sidebar-avatar').textContent = initials;
+async function initDashboard(): Promise<void> {
+  applyAvatar(el('sidebar-avatar'), user);
   el('sidebar-name').textContent   = `${user.firstName} ${user.lastName}`;
   el('hero-greeting').textContent  = `Hello, ${user.firstName}! 👋`;
 
-  // Min booking date = tomorrow
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   (el('bk-date') as HTMLInputElement).min = tomorrow.toISOString().split('T')[0]!;
 
-  loadStats();
-  loadRecentAppointments();
-  loadMyAppointments();
+  await loadStats();
+  await loadRecentAppointments();
+  await loadMyAppointments();
   loadProfile();
 }
 
 // ── Stats ────────────────────────────────────────────────
-function loadStats(): void {
-  const appointments = getAppointments().filter(a => a.studentId === user.id);
+async function loadStats(): Promise<void> {
+  const appointments = (await getAppointments()).filter(a => a.studentId === user.id);
   el('stat-total').textContent    = String(appointments.length);
   el('stat-approved').textContent = String(appointments.filter(a => a.status === 'approved').length);
   el('stat-pending').textContent  = String(appointments.filter(a => a.status === 'pending').length);
@@ -109,8 +114,8 @@ function loadStats(): void {
 }
 
 // ── Recent Appointments (home hero) ──────────────────────
-function loadRecentAppointments(): void {
-  const appointments = getAppointments()
+async function loadRecentAppointments(): Promise<void> {
+  const appointments = (await getAppointments())
     .filter(a => a.studentId === user.id)
     .slice(-3)
     .reverse();
@@ -156,8 +161,8 @@ function buildMiniCard(a: Appointment): string {
 }
 
 // ── My Appointments (full list) ──────────────────────────
-function loadMyAppointments(): void {
-  const appointments = getAppointments()
+async function loadMyAppointments(): Promise<void> {
+  const appointments = (await getAppointments())
     .filter(a => a.studentId === user.id)
     .reverse();
   const container = el('my-appointments-list');
@@ -208,8 +213,8 @@ function loadMyAppointments(): void {
 // ── Inbox ─────────────────────────────────────────────────
 const FACILITATOR_ID = 'f001';
 
-function loadStudentInbox(): void {
-  const fac = getFacilitator();
+async function loadStudentInbox(): Promise<void> {
+  const fac = await getFacilitator();
   if (!fac) return;
   const initials = getInitials(fac.firstName, fac.lastName);
 
@@ -222,11 +227,11 @@ function loadStudentInbox(): void {
       </div>
     </div>`;
 
-  renderStudentMessages();
+  await renderStudentMessages();
 }
 
-function renderStudentMessages(): void {
-  const msgs = getConversation(user.id, FACILITATOR_ID);
+async function renderStudentMessages(): Promise<void> {
+  const msgs = await getConversation(user.id, FACILITATOR_ID);
   const container = el('student-messages');
 
   if (!msgs.length) {
@@ -250,63 +255,74 @@ function renderStudentMessages(): void {
   container.scrollTop = container.scrollHeight;
 }
 
-function studentSendMessage(): void {
+async function studentSendMessage(): Promise<void> {
   const input = el<HTMLInputElement>('student-chat-input');
   const text  = input.value.trim();
   if (!text) return;
-  sendMessage(user.id, FACILITATOR_ID, text);
+  await sendMessage(user.id, FACILITATOR_ID, text);
   input.value = '';
-  renderStudentMessages();
+  await renderStudentMessages();
 }
 
-el('student-send-btn')?.addEventListener('click', studentSendMessage);
+el('student-send-btn')?.addEventListener('click', () => { void studentSendMessage(); });
 el<HTMLInputElement>('student-chat-input')?.addEventListener('keypress', (e: KeyboardEvent) => {
-  if (e.key === 'Enter') studentSendMessage();
+  if (e.key === 'Enter') void studentSendMessage();
 });
 
 // ── Profile ──────────────────────────────────────────────
 function loadProfile(): void {
-  const initials = getInitials(user.firstName, user.lastName);
-  el('profile-avatar-big').textContent                    = initials;
-  el('profile-fullname').textContent                      = `${user.firstName} ${user.lastName}`;
-  el('profile-schoolid').textContent                      = `School ID: ${user.schoolId}`;
-  el('profile-year').textContent                          = user.year;
-  el('profile-dept').textContent                          = user.department;
-  (el<HTMLInputElement>('pf-firstname')).value            = user.firstName;
-  (el<HTMLInputElement>('pf-lastname')).value             = user.lastName;
-  (el<HTMLInputElement>('pf-age')).value                  = String(user.age);
-  (el<HTMLInputElement>('pf-contact')).value              = user.contact;
-  (el<HTMLInputElement>('pf-email')).value                = user.email;
-  (el<HTMLSelectElement>('pf-year')).value                = user.year;
-  (el<HTMLSelectElement>('pf-dept')).value                = user.department;
+  const avatarEl = el('profile-avatar-big');
+  applyAvatar(avatarEl, user);
+  el('profile-fullname').textContent = `${user.firstName} ${user.lastName}`;
+  el('profile-schoolid').textContent = `School ID: ${user.schoolId}`;
+  el('profile-year').textContent     = user.year;
+  el('profile-dept').textContent     = user.department;
+  (el<HTMLInputElement>('pf-firstname')).value  = user.firstName;
+  (el<HTMLInputElement>('pf-lastname')).value   = user.lastName;
+  (el<HTMLInputElement>('pf-age')).value        = String(user.age);
+  (el<HTMLInputElement>('pf-contact')).value    = user.contact;
+  (el<HTMLInputElement>('pf-email')).value      = user.email;
+  (el<HTMLSelectElement>('pf-year')).value      = user.year;
+  (el<HTMLSelectElement>('pf-dept')).value      = user.department;
 }
 
 const profileForm = el<HTMLFormElement>('profileForm');
-profileForm?.addEventListener('submit', (e: SubmitEvent) => {
+profileForm?.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(profileForm)) as Partial<Student>;
-  const students = getStudents();
-  const idx = students.findIndex(s => s.id === user.id);
-  if (idx > -1) {
-    Object.assign(students[idx]!, data);
-    setStudents(students);
-    user = students[idx]!;
-    setCurrentUser({ ...user, role: 'student' });
+  // Keep the existing profile picture if not replaced
+  const updated = await saveStudentProfile(user.id, { ...data, profilePicture: user.profilePicture });
+  if (updated) {
+    user = { ...updated, role: 'student' };
+    setCurrentUser(user);
     showToast('Profile updated! ✅', 'success');
     loadProfile();
-    loadStats();
+    await loadStats();
   }
 });
 
-// Profile picture preview
+// ── Profile Picture Upload ────────────────────────────────
 el<HTMLInputElement>('profile-pic-input')?.addEventListener('change', function () {
   const file = (this as HTMLInputElement).files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = (ev: ProgressEvent<FileReader>) => {
-    const avatarEl = el('profile-avatar-big');
-    avatarEl.style.background = `url(${ev.target?.result as string}) center/cover`;
-    avatarEl.textContent = '';
+  reader.onload = async (ev: ProgressEvent<FileReader>) => {
+    const base64 = ev.target?.result as string;
+    // Save picture to SQLite immediately
+    const updated = await saveStudentProfile(user.id, {
+      firstName: user.firstName, lastName: user.lastName,
+      age: user.age, contact: user.contact, email: user.email,
+      year: user.year, department: user.department,
+      profilePicture: base64,
+    });
+    if (updated) {
+      user = { ...updated, role: 'student' };
+      setCurrentUser(user);
+      showToast('Profile picture saved! 📷', 'success');
+      loadProfile();
+      // Also update sidebar avatar
+      applyAvatar(el('sidebar-avatar'), user);
+    }
   };
   reader.readAsDataURL(file);
 });
@@ -317,9 +333,9 @@ const TIME_SLOTS = [
   '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM',
 ];
 
-el<HTMLInputElement>('bk-date')?.addEventListener('change', function () {
+el<HTMLInputElement>('bk-date')?.addEventListener('change', async function () {
   const selectedDate = (this as HTMLInputElement).value;
-  const booked = getAppointments()
+  const booked = (await getAppointments())
     .filter(a => a.date === selectedDate && a.status !== 'rejected')
     .map(a => a.time);
 
@@ -343,9 +359,9 @@ function selectSlot(time: string): void {
 }
 
 // ── Booking Form ─────────────────────────────────────────
-const bookingForm = el<HTMLFormElement>('bookingForm');
-const bookSubmitBtn = el<HTMLButtonElement>('book-submit-btn');
-bookingForm?.addEventListener('submit', (e: SubmitEvent) => {
+const bookingForm    = el<HTMLFormElement>('bookingForm');
+const bookSubmitBtn  = el<HTMLButtonElement>('book-submit-btn');
+bookingForm?.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   const timeVal = (el('bk-time-hidden') as HTMLInputElement).value;
   if (!timeVal) {
@@ -356,19 +372,20 @@ bookingForm?.addEventListener('submit', (e: SubmitEvent) => {
     date: string; time: string; reason: string;
   };
   data.time = timeVal;
-  if (bookAppointment(user.id, `${user.firstName} ${user.lastName}`, data)) {
+  const ok = await bookAppointment(user.id, `${user.firstName} ${user.lastName}`, data);
+  if (ok) {
     bookingForm.reset();
     el('time-slot-grid').innerHTML = '';
     el('time-slot-info').textContent = 'Select a date first to see available slots.';
-    loadStats();
-    loadRecentAppointments();
-    loadMyAppointments();
+    await loadStats();
+    await loadRecentAppointments();
+    await loadMyAppointments();
     setTimeout(() => navigate('appointments'), 1200);
   }
 });
 
-// suppress unused import
+// suppress unused
 void [formatDate, twoInitials, bookSubmitBtn];
 
 // ── Boot ─────────────────────────────────────────────────
-initDashboard();
+void initDashboard();

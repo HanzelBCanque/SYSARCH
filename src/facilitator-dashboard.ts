@@ -3,21 +3,18 @@
 // =========================================================
 
 import './style.css';
-import { seedData } from './seed';
 import { Auth } from './auth';
 import {
   showToast, openModal, closeModal,
   setupModalOverlayClose, getInitials,
   formatDate, formatTime, twoInitials,
 } from './ui';
-import { sendMessage, getConversation, updateAppointmentStatus, updateSessionStatus } from './actions';
+import { sendMessage, getConversation, updateAppointmentStatus, updateSessionStatus, saveFacilitatorProfile } from './actions';
 import {
-  getAppointments, getStudents, getFacilitator,
-  setFacilitator, setCurrentUser,
+  getAppointments, getStudents, getFacilitator, setCurrentUser,
 } from './store';
 import type { Facilitator, Appointment, SessionStatus } from './types';
 
-seedData();
 setupModalOverlayClose();
 
 // ── Auth Guard ───────────────────────────────────────────
@@ -62,13 +59,12 @@ function navigate(section: FacSection): void {
   if (navEl) navEl.classList.add('active');
   el('topbar-title').textContent = TITLES[section];
 
-  if (section === 'appointments')   renderAppointmentRequests();
-  if (section === 'sessions')       renderSessionTable();
-  if (section === 'all-sessions')   renderAllStudentsSessions();
-  if (section === 'inbox')          loadFacilitatorInbox();
+  if (section === 'appointments')   void renderAppointmentRequests();
+  if (section === 'sessions')       void renderSessionTable();
+  if (section === 'all-sessions')   void renderAllStudentsSessions();
+  if (section === 'inbox')          void loadFacilitatorInbox();
 }
 
-// Wire nav buttons
 el('nav-home')?.addEventListener('click',          () => navigate('home'));
 el('nav-appointments')?.addEventListener('click',  () => navigate('appointments'));
 el('nav-sessions')?.addEventListener('click',      () => navigate('sessions'));
@@ -79,31 +75,42 @@ el('nav-logout')?.addEventListener('click',        () => openModal('modal-logout
 el('topbar-logout')?.addEventListener('click',     () => openModal('modal-logout'));
 el('topbar-profile')?.addEventListener('click',    () => navigate('profile'));
 
-// Quick buttons on hero
 el('review-appts-btn')?.addEventListener('click',  () => navigate('appointments'));
 el('view-sessions-btn')?.addEventListener('click', () => navigate('sessions'));
 
-// ── Sidebar toggle ───────────────────────────────────────
 document.querySelector<HTMLButtonElement>('.topbar-icon-btn')?.addEventListener('click', () =>
   el('sidebar').classList.toggle('open'),
 );
 
+// ── Avatar helper ─────────────────────────────────────────
+function applyAvatar(avatarEl: HTMLElement, u: Facilitator): void {
+  if (u.profilePicture) {
+    avatarEl.style.background = `url(${u.profilePicture}) center/cover`;
+    avatarEl.textContent = '';
+  } else {
+    avatarEl.style.background = '';
+    avatarEl.textContent = getInitials(u.firstName, u.lastName);
+  }
+}
+
 // ── Init ─────────────────────────────────────────────────
-function initDashboard(): void {
-  const initials = getInitials(user.firstName, user.lastName);
-  el('sidebar-avatar').textContent = initials;
+async function initDashboard(): Promise<void> {
+  applyAvatar(el('sidebar-avatar'), user);
   el('sidebar-name').textContent   = `${user.firstName} ${user.lastName}`;
   el('fac-greeting').textContent   = `Good day, ${user.firstName}! 👩‍⚕️`;
-  loadStats();
-  loadHomeRecentRequests();
-  updatePendingBadge();
-  loadFacProfile();
+  await loadStats();
+  await loadHomeRecentRequests();
+  updatePendingBadge([]);
+  await loadFacProfile();
+  // Update badge with real data
+  const appts = await getAppointments();
+  updatePendingBadge(appts);
 }
 
 // ── Stats ─────────────────────────────────────────────────
-function loadStats(): void {
-  const appts    = getAppointments();
-  const students = getStudents();
+async function loadStats(): Promise<void> {
+  const appts    = await getAppointments();
+  const students = await getStudents();
 
   el('stat-total-students').textContent = String(students.length);
   el('stat-pending-appts').textContent  = String(appts.filter(a => a.status === 'pending').length);
@@ -116,16 +123,16 @@ function loadStats(): void {
   el('stat-done-sessions').textContent = String(done);
 }
 
-function updatePendingBadge(): void {
-  const count = getAppointments().filter(a => a.status === 'pending').length;
+function updatePendingBadge(appts: Appointment[]): void {
+  const count = appts.filter(a => a.status === 'pending').length;
   const badge = el('pending-badge');
   badge.textContent    = String(count);
   badge.style.display  = count > 0 ? 'inline' : 'none';
 }
 
 // ── Home Recent Requests ──────────────────────────────────
-function loadHomeRecentRequests(): void {
-  const pending   = getAppointments().filter(a => a.status === 'pending').slice(0, 3);
+async function loadHomeRecentRequests(): Promise<void> {
+  const pending   = (await getAppointments()).filter(a => a.status === 'pending').slice(0, 3);
   const container = el('home-recent-requests');
 
   if (!pending.length) {
@@ -173,24 +180,26 @@ function buildApptCard(a: Appointment): string {
 
 function bindApptCardButtons(container: HTMLElement): void {
   container.querySelectorAll<HTMLButtonElement>('[data-approve]').forEach(btn => {
-    btn.addEventListener('click', () => { approveAppt(btn.dataset['approve']!); });
+    btn.addEventListener('click', () => { void approveAppt(btn.dataset['approve']!); });
   });
   container.querySelectorAll<HTMLButtonElement>('[data-reject]').forEach(btn => {
-    btn.addEventListener('click', () => { rejectAppt(btn.dataset['reject']!); });
+    btn.addEventListener('click', () => { void rejectAppt(btn.dataset['reject']!); });
   });
   container.querySelectorAll<HTMLButtonElement>('[data-sessions]').forEach(btn => {
-    btn.addEventListener('click', () => { openSessionModal(btn.dataset['sessions']!); });
+    btn.addEventListener('click', () => { void openSessionModal(btn.dataset['sessions']!); });
   });
 }
 
 // ── Appointment Requests ──────────────────────────────────
-function renderAppointmentRequests(): void {
+async function renderAppointmentRequests(): Promise<void> {
   const query  = (el<HTMLInputElement>('appt-search')?.value ?? '').toLowerCase();
   const status = (el<HTMLSelectElement>('appt-status-filter')?.value ?? '');
-  let appts    = getAppointments();
+  let appts    = await getAppointments();
   if (query)  appts = appts.filter(a => a.studentName.toLowerCase().includes(query));
   if (status) appts = appts.filter(a => a.status === status);
   appts = appts.reverse();
+
+  updatePendingBadge(appts);
 
   const container = el('appointment-requests-list');
   if (!appts.length) {
@@ -205,25 +214,28 @@ function renderAppointmentRequests(): void {
   bindApptCardButtons(container);
 }
 
-el<HTMLInputElement>('appt-search')?.addEventListener('input', renderAppointmentRequests);
-el<HTMLSelectElement>('appt-status-filter')?.addEventListener('change', renderAppointmentRequests);
+el<HTMLInputElement>('appt-search')?.addEventListener('input', () => void renderAppointmentRequests());
+el<HTMLSelectElement>('appt-status-filter')?.addEventListener('change', () => void renderAppointmentRequests());
 
-function approveAppt(id: string): void {
-  updateAppointmentStatus(id, 'approved');
-  loadStats(); updatePendingBadge(); loadHomeRecentRequests();
-  renderAppointmentRequests();
+async function approveAppt(id: string): Promise<void> {
+  await updateAppointmentStatus(id, 'approved');
+  await loadStats();
+  await loadHomeRecentRequests();
+  await renderAppointmentRequests();
 }
-function rejectAppt(id: string): void {
-  updateAppointmentStatus(id, 'rejected');
-  loadStats(); updatePendingBadge(); loadHomeRecentRequests();
-  renderAppointmentRequests();
+async function rejectAppt(id: string): Promise<void> {
+  await updateAppointmentStatus(id, 'rejected');
+  await loadStats();
+  await loadHomeRecentRequests();
+  await renderAppointmentRequests();
 }
 
 // ── Session Modal ─────────────────────────────────────────
 let activeApptId: string | null = null;
 
-function openSessionModal(apptId: string): void {
-  const apt = getAppointments().find(a => a.id === apptId);
+async function openSessionModal(apptId: string): Promise<void> {
+  const appts = await getAppointments();
+  const apt = appts.find(a => a.id === apptId);
   if (!apt) return;
   activeApptId = apptId;
 
@@ -245,17 +257,17 @@ function openSessionModal(apptId: string): void {
       </span>`).join('');
 
     container.querySelectorAll<HTMLElement>('[data-appt]').forEach(chip => {
-      chip.addEventListener('click', () => {
+      chip.addEventListener('click', async () => {
         const a = chip.dataset['appt']!;
         const k = chip.dataset['key'] as keyof Appointment['sessions'];
         const s = chip.dataset['status'] as SessionStatus;
-        updateSessionStatus(a, k, s);
+        await updateSessionStatus(a, k, s);
         container.querySelectorAll<HTMLElement>('.session-chip').forEach(
           c => (c.style.outline = ''),
         );
         chip.style.outline = '2px solid white';
-        loadStats();
-        renderSessionTable();
+        await loadStats();
+        await renderSessionTable();
         showToast('Session status updated!', 'success');
       });
     });
@@ -265,14 +277,13 @@ function openSessionModal(apptId: string): void {
 }
 
 el('modal-session-close')?.addEventListener('click', () => closeModal('modal-session-status'));
-
-void activeApptId; // suppress unused
+void activeApptId;
 
 // ── Session Table ─────────────────────────────────────────
-function renderSessionTable(): void {
-  const query = (el<HTMLInputElement>('session-search')?.value ?? '').toLowerCase();
-  const dept  = (el<HTMLSelectElement>('session-dept-filter')?.value ?? '');
-  const students = getStudents();
+async function renderSessionTable(): Promise<void> {
+  const query   = (el<HTMLInputElement>('session-search')?.value ?? '').toLowerCase();
+  const dept    = (el<HTMLSelectElement>('session-dept-filter')?.value ?? '');
+  const students = await getStudents();
 
   // Populate dept filter (once)
   const deptFilter = el<HTMLSelectElement>('session-dept-filter');
@@ -284,7 +295,7 @@ function renderSessionTable(): void {
     });
   }
 
-  let appts = getAppointments();
+  let appts = await getAppointments();
   if (query) appts = appts.filter(a => a.studentName.toLowerCase().includes(query));
   if (dept) {
     const ids = students.filter(s => s.department === dept).map(s => s.id);
@@ -329,22 +340,22 @@ function renderSessionTable(): void {
       </tr>`;
   }).join('');
 
-  // Bind session chip clicks
   tbody.querySelectorAll<HTMLElement>('[data-sessions]').forEach(chip => {
-    chip.addEventListener('click', () => openSessionModal(chip.dataset['sessions']!));
+    chip.addEventListener('click', () => void openSessionModal(chip.dataset['sessions']!));
   });
 }
 
-el<HTMLInputElement>('session-search')?.addEventListener('input', renderSessionTable);
-el<HTMLSelectElement>('session-dept-filter')?.addEventListener('change', renderSessionTable);
+el<HTMLInputElement>('session-search')?.addEventListener('input', () => void renderSessionTable());
+el<HTMLSelectElement>('session-dept-filter')?.addEventListener('change', () => void renderSessionTable());
 
 // ── All Students Grid ─────────────────────────────────────
-function renderAllStudentsSessions(): void {
+async function renderAllStudentsSessions(): Promise<void> {
   const query    = (el<HTMLInputElement>('all-search')?.value ?? '').toLowerCase();
-  const students = getStudents().filter(
+  const allStudents = await getStudents();
+  const students = allStudents.filter(
     s => !query || `${s.firstName} ${s.lastName}`.toLowerCase().includes(query),
   );
-  const appts    = getAppointments();
+  const appts    = await getAppointments();
   const grid     = el('all-students-grid');
 
   if (!students.length) {
@@ -376,10 +387,15 @@ function renderAllStudentsSessions(): void {
       0,
     );
 
+    // Show profile picture if available
+    const avatarStyle = s.profilePicture
+      ? `style="background:url(${s.profilePicture}) center/cover; font-size:0;"`
+      : '';
+
     return `
       <div class="student-card">
         <div class="student-card-top">
-          <div class="avatar avatar-md">${initials}</div>
+          <div class="avatar avatar-md" ${avatarStyle}>${s.profilePicture ? '' : initials}</div>
           <div>
             <div class="student-card-name">${s.firstName} ${s.lastName}</div>
             <div class="student-card-meta">${s.year} · ${s.department}</div>
@@ -400,26 +416,30 @@ function renderAllStudentsSessions(): void {
     btn.addEventListener('click', () => navigate('sessions')),
   );
   grid.querySelectorAll<HTMLElement>('[data-message-student]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const sid = btn.dataset['messageStudent']!;
       navigate('inbox');
-      const student = getStudents().find(s => s.id === sid);
+      const students2 = await getStudents();
+      const student = students2.find(s => s.id === sid);
       if (student) openFacChat(sid, `${student.firstName} ${student.lastName}`);
     });
   });
 }
 
-el<HTMLInputElement>('all-search')?.addEventListener('input', renderAllStudentsSessions);
+el<HTMLInputElement>('all-search')?.addEventListener('input', () => void renderAllStudentsSessions());
 
 // ── Facilitator Inbox ─────────────────────────────────────
-function loadFacilitatorInbox(): void {
-  const students  = getStudents();
+async function loadFacilitatorInbox(): Promise<void> {
+  const students  = await getStudents();
   const container = el('facilitator-conversations');
 
-  container.innerHTML = students.map(s => {
+  const convData = await Promise.all(students.map(async s => {
+    const msgs = await getConversation(user.id, s.id);
+    return { s, msgs, last: msgs[msgs.length - 1] };
+  }));
+
+  container.innerHTML = convData.map(({ s, last }) => {
     const initials = getInitials(s.firstName, s.lastName);
-    const msgs     = getConversation(user.id, s.id);
-    const last     = msgs[msgs.length - 1];
     return `
       <div class="conversation-item ${currentChatStudentId === s.id ? 'active' : ''}"
           data-chat-student="${s.id}" data-chat-name="${s.firstName} ${s.lastName}">
@@ -440,19 +460,19 @@ function loadFacilitatorInbox(): void {
     });
   });
 
-  if (currentChatStudentId) renderFacMessages();
+  if (currentChatStudentId) await renderFacMessages();
 }
 
 function openFacChat(studentId: string, studentName: string): void {
   currentChatStudentId = studentId;
   el('fac-chat-name').textContent = studentName;
   el('fac-chat-header').querySelector('.avatar')!.textContent = twoInitials(studentName);
-  loadFacilitatorInbox();
+  void loadFacilitatorInbox();
 }
 
-function renderFacMessages(): void {
+async function renderFacMessages(): Promise<void> {
   if (!currentChatStudentId) return;
-  const msgs      = getConversation(user.id, currentChatStudentId);
+  const msgs      = await getConversation(user.id, currentChatStudentId);
   const container = el('facilitator-messages');
   const initials  = el('fac-chat-header').querySelector('.avatar')?.textContent ?? '?';
 
@@ -477,7 +497,7 @@ function renderFacMessages(): void {
   container.scrollTop = container.scrollHeight;
 }
 
-function facilitatorSendMessage(): void {
+async function facilitatorSendMessage(): Promise<void> {
   if (!currentChatStudentId) {
     showToast('Select a student first!', 'error');
     return;
@@ -485,58 +505,67 @@ function facilitatorSendMessage(): void {
   const input = el<HTMLInputElement>('fac-chat-input');
   const text  = input.value.trim();
   if (!text) return;
-  sendMessage(user.id, currentChatStudentId, text);
+  await sendMessage(user.id, currentChatStudentId, text);
   input.value = '';
-  renderFacMessages();
-  loadFacilitatorInbox();
+  await renderFacMessages();
+  await loadFacilitatorInbox();
 }
 
-el('fac-send-btn')?.addEventListener('click', facilitatorSendMessage);
+el('fac-send-btn')?.addEventListener('click', () => void facilitatorSendMessage());
 el<HTMLInputElement>('fac-chat-input')?.addEventListener('keypress', (e: KeyboardEvent) => {
-  if (e.key === 'Enter') facilitatorSendMessage();
+  if (e.key === 'Enter') void facilitatorSendMessage();
 });
 
 // ── Facilitator Profile ───────────────────────────────────
-function loadFacProfile(): void {
-  const fac = getFacilitator()!;
-  const initials = getInitials(fac.firstName, fac.lastName);
-  el('fac-avatar-big').textContent   = initials;
-  el('fac-profile-name').textContent = `${fac.firstName} ${fac.lastName}`;
-  el('fac-profile-dept').textContent = fac.department;
+async function loadFacProfile(): Promise<void> {
+  const fac = await getFacilitator();
+  if (!fac) return;
+  applyAvatar(el('fac-avatar-big'), fac);
+  el('fac-profile-name').textContent    = `${fac.firstName} ${fac.lastName}`;
+  el('fac-profile-dept').textContent    = fac.department;
   el('fac-profile-contact').textContent = '📞 ' + (fac.contact || '—');
-  (el<HTMLInputElement>('fpf-firstname')).value = fac.firstName;
-  (el<HTMLInputElement>('fpf-lastname')).value  = fac.lastName;
-  (el<HTMLInputElement>('fpf-dept')).value      = fac.department;
-  (el<HTMLInputElement>('fpf-contact')).value   = fac.contact;
-  (el<HTMLTextAreaElement>('fpf-bio')).value    = fac.bio ?? '';
+  (el<HTMLInputElement>('fpf-firstname')).value  = fac.firstName;
+  (el<HTMLInputElement>('fpf-lastname')).value   = fac.lastName;
+  (el<HTMLInputElement>('fpf-dept')).value       = fac.department;
+  (el<HTMLInputElement>('fpf-contact')).value    = fac.contact;
+  (el<HTMLTextAreaElement>('fpf-bio')).value     = fac.bio ?? '';
 }
 
 const facProfileForm = el<HTMLFormElement>('facProfileForm');
-facProfileForm?.addEventListener('submit', (e: SubmitEvent) => {
+facProfileForm?.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(facProfileForm)) as Partial<Facilitator>;
-  const existing = getFacilitator()!;
+  const existing = await getFacilitator();
+  if (!existing) return;
   const updated: Facilitator = { ...existing, ...data };
-  setFacilitator(updated);
+  await saveFacilitatorProfile(updated);
   user = { ...updated, role: 'facilitator' };
   setCurrentUser(user);
   showToast('Profile updated! ✅', 'success');
-  loadFacProfile();
-  el('fac-greeting').textContent   = `Good day, ${updated.firstName}! 👩‍⚕️`;
-  el('sidebar-name').textContent   = `${updated.firstName} ${updated.lastName}`;
+  await loadFacProfile();
+  el('fac-greeting').textContent  = `Good day, ${updated.firstName}! 👩‍⚕️`;
+  el('sidebar-name').textContent  = `${updated.firstName} ${updated.lastName}`;
 });
 
+// ── Facilitator Profile Picture Upload ────────────────────
 el<HTMLInputElement>('fac-pic-input')?.addEventListener('change', function () {
   const file = (this as HTMLInputElement).files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = (ev: ProgressEvent<FileReader>) => {
-    const avatarEl = el('fac-avatar-big');
-    avatarEl.style.background = `url(${ev.target?.result as string}) center/cover`;
-    avatarEl.textContent = '';
+  reader.onload = async (ev: ProgressEvent<FileReader>) => {
+    const base64 = ev.target?.result as string;
+    const existing = await getFacilitator();
+    if (!existing) return;
+    const updated: Facilitator = { ...existing, profilePicture: base64 };
+    await saveFacilitatorProfile(updated);
+    user = { ...updated, role: 'facilitator' };
+    setCurrentUser(user);
+    showToast('Profile picture saved! 📷', 'success');
+    await loadFacProfile();
+    applyAvatar(el('sidebar-avatar'), user);
   };
   reader.readAsDataURL(file);
 });
 
 // ── Boot ─────────────────────────────────────────────────
-initDashboard();
+void initDashboard();

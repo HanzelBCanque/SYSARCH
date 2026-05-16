@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initialize database connection
 async function initDb() {
   const db = await open({
     filename: path.join(__dirname, '..', 'database.sqlite'),
@@ -27,9 +26,13 @@ async function initDb() {
       department TEXT,
       contact TEXT,
       role TEXT DEFAULT 'student',
-      avatarInitial TEXT
+      avatarInitial TEXT,
+      profilePicture TEXT
     )
   `);
+
+  // Migrate: add profilePicture column if upgrading from old schema
+  try { await db.exec(`ALTER TABLE students ADD COLUMN profilePicture TEXT`); } catch (_) {}
 
   // Create Facilitators Table
   await db.exec(`
@@ -43,12 +46,14 @@ async function initDb() {
       department TEXT,
       contact TEXT,
       bio TEXT,
-      avatarInitial TEXT
+      avatarInitial TEXT,
+      profilePicture TEXT
     )
   `);
 
+  try { await db.exec(`ALTER TABLE facilitators ADD COLUMN profilePicture TEXT`); } catch (_) {}
+
   // Create Appointments Table
-  // 'sessions' will be stored as a stringified JSON
   await db.exec(`
     CREATE TABLE IF NOT EXISTS appointments (
       id TEXT PRIMARY KEY,

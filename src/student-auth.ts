@@ -3,13 +3,10 @@
 // =========================================================
 
 import './style.css';
-import { seedData } from './seed';
 import { Auth } from './auth';
 import { setupPasswordToggles, showToast } from './ui';
 import { loginStudent, registerStudent } from './actions';
 import type { SignUpData } from './actions';
-
-seedData();
 
 // Redirect if already logged in as student
 const current = Auth.current();
@@ -30,26 +27,25 @@ function switchTab(tab: 'login' | 'signup'): void {
   if (form) form.style.display = 'block';
 }
 
-// Wire tab toggle buttons
 document.getElementById('tab-login')?.addEventListener('click', () => switchTab('login'));
 document.getElementById('tab-signup')?.addEventListener('click', () => switchTab('signup'));
 document.getElementById('go-signup')?.addEventListener('click', () => switchTab('signup'));
 document.getElementById('go-login')?.addEventListener('click', () => switchTab('login'));
 
-// ── Password Toggles ─────────────────────────────────────
 setupPasswordToggles();
 
 // ── Login Form ───────────────────────────────────────────
 const loginForm = document.getElementById('loginForm') as HTMLFormElement | null;
 const loginBtn  = document.getElementById('login-btn') as HTMLButtonElement | null;
 
-loginForm?.addEventListener('submit', (e: SubmitEvent) => {
+loginForm?.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   if (!loginBtn) return;
   loginBtn.disabled = true;
   loginBtn.textContent = 'Logging in…';
   const data = Object.fromEntries(new FormData(loginForm)) as { email: string; password: string };
-  if (!loginStudent(data.email, data.password)) {
+  const ok = await loginStudent(data.email, data.password);
+  if (!ok) {
     loginBtn.disabled = false;
     loginBtn.innerHTML = '🔑 Login';
   }
@@ -59,7 +55,7 @@ loginForm?.addEventListener('submit', (e: SubmitEvent) => {
 const signupForm = document.getElementById('signupForm') as HTMLFormElement | null;
 const signupBtn  = document.getElementById('signup-btn') as HTMLButtonElement | null;
 
-signupForm?.addEventListener('submit', (e: SubmitEvent) => {
+signupForm?.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   if (!signupBtn) return;
   signupBtn.disabled = true;
@@ -71,7 +67,8 @@ signupForm?.addEventListener('submit', (e: SubmitEvent) => {
     signupBtn.innerHTML = '🚀 Create Account';
     return;
   }
-  if (!registerStudent(data)) {
+  const ok = await registerStudent(data);
+  if (!ok) {
     signupBtn.disabled = false;
     signupBtn.innerHTML = '🚀 Create Account';
   }

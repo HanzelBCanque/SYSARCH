@@ -1,44 +1,80 @@
 // =========================================================
-//  SYSARCH — localStorage Store (typed)
+//  SYSARCH — API Store (SQLite via Express backend)
 // =========================================================
 
-import type {
-  Student, Facilitator, Appointment, Message, CurrentUser
-} from './types';
+import type { Student, Facilitator, Appointment, Message, CurrentUser } from './types';
 
-// ── Generic get/set ──────────────────────────────────────
-export const Store = {
-  get<T>(key: string, fallback: T): T {
-    try {
-      const raw = localStorage.getItem(key);
-      return raw !== null ? (JSON.parse(raw) as T) : fallback;
-    } catch {
-      return fallback;
-    }
-  },
-  set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
-  },
-  remove(key: string): void {
-    localStorage.removeItem(key);
-  },
+const API = 'http://localhost:3000';
+
+// ── Current User — sessionStorage (active session only) ──
+export const getCurrentUser = (): CurrentUser | null => {
+  try {
+    const raw = sessionStorage.getItem('currentUser');
+    return raw ? (JSON.parse(raw) as CurrentUser) : null;
+  } catch { return null; }
+};
+export const setCurrentUser = (u: CurrentUser): void => {
+  sessionStorage.setItem('currentUser', JSON.stringify(u));
+};
+export const removeCurrentUser = (): void => {
+  sessionStorage.removeItem('currentUser');
 };
 
-// ── Typed accessors ──────────────────────────────────────
-export const getStudents      = (): Student[]       => Store.get<Student[]>('students', []);
-export const setStudents      = (s: Student[])      => Store.set('students', s);
+// ── Students ──────────────────────────────────────────────
+export async function getStudents(): Promise<Student[]> {
+  try {
+    const res = await fetch(`${API}/api/students`);
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
+}
 
-export const getFacilitator   = (): Facilitator | null =>
-  Store.get<Facilitator | null>('facilitator', null);
-export const setFacilitator   = (f: Facilitator)   => Store.set('facilitator', f);
+export async function updateStudentProfile(id: string, data: Partial<Student>): Promise<Student | null> {
+  try {
+    const res = await fetch(`${API}/api/students/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch { return null; }
+}
 
-export const getAppointments  = (): Appointment[]   => Store.get<Appointment[]>('appointments', []);
-export const setAppointments  = (a: Appointment[])  => Store.set('appointments', a);
+// ── Facilitator ───────────────────────────────────────────
+export async function getFacilitator(): Promise<Facilitator | null> {
+  try {
+    const res = await fetch(`${API}/api/facilitator`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch { return null; }
+}
 
-export const getMessages      = (): Message[]       => Store.get<Message[]>('messages', []);
-export const setMessages      = (m: Message[])      => Store.set('messages', m);
+export async function setFacilitator(f: Facilitator): Promise<void> {
+  await fetch(`${API}/api/facilitator`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(f),
+  });
+}
 
-export const getCurrentUser   = (): CurrentUser | null =>
-  Store.get<CurrentUser | null>('currentUser', null);
-export const setCurrentUser   = (u: CurrentUser)   => Store.set('currentUser', u);
-export const removeCurrentUser = ()                 => Store.remove('currentUser');
+// ── Appointments ──────────────────────────────────────────
+export async function getAppointments(): Promise<Appointment[]> {
+  try {
+    const res = await fetch(`${API}/api/appointments`);
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
+}
+
+// ── Messages ──────────────────────────────────────────────
+export async function getMessages(from?: string, to?: string): Promise<Message[]> {
+  try {
+    const url = from && to
+      ? `${API}/api/messages?from=${from}&to=${to}`
+      : `${API}/api/messages`;
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
+}

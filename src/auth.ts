@@ -1,5 +1,5 @@
 // =========================================================
-//  SYSARCH — Auth Module
+//  SYSARCH — Auth Module (sessionStorage)
 // =========================================================
 
 import { getCurrentUser, setCurrentUser, removeCurrentUser } from './store';

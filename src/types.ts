@@ -27,6 +27,7 @@ export interface Student {
   contact: string;
   role: 'student';
   avatarInitial: string;
+  profilePicture?: string;
 }
 
 export interface Facilitator {
@@ -40,6 +41,7 @@ export interface Facilitator {
   contact: string;
   bio: string;
   avatarInitial: string;
+  profilePicture?: string;
 }
 
 export type CurrentUser = (Student | Facilitator) & { role: UserRole };
